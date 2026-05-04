@@ -4,6 +4,7 @@ import remarkGfm from 'remark-gfm'
 import { ChatMessage as Msg } from '../store/useAppStore'
 import { useAppStore } from '../store/useAppStore'
 import { streamExplain } from '../services/api'
+import SelectableContent from './SelectableContent'
 import toast from 'react-hot-toast'
 
 interface Props {
@@ -55,6 +56,7 @@ export default function ChatMessage({ msg, fileId }: Props) {
     return (
       <div className="chat-row user">
         <div className="chat-bubble user-bubble">
+          {/* User prompts are not selectable for explain — they're the question */}
           <pre className="user-prompt">{msg.content}</pre>
         </div>
         <div className="chat-avatar user-avatar">我</div>
@@ -77,16 +79,17 @@ export default function ChatMessage({ msg, fileId }: Props) {
           </div>
         ) : msg.isError ? (
           <div className="error-content">
-            <AlertTriangle size={14} />
+            <AlertTriangle size={12} />
             <span>AI 服务调用失败</span>
             <button className="retry-btn" onClick={handleRetry}>
               <RotateCcw size={11} /> 重试
             </button>
           </div>
         ) : (
-          <div className="md-prose">
+          // Wrap in SelectableContent so the user can select text and get an explanation
+          <SelectableContent className="md-prose">
             <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown>
-          </div>
+          </SelectableContent>
         )}
       </div>
     </div>

@@ -20,14 +20,14 @@ export default function LeftPanel() {
           className={`tab-btn ${leftViewMode === 'mindmap' ? 'active' : ''}`}
           onClick={() => setLeftViewMode('mindmap')}
         >
-          <Share2 size={13} />
+          <Share2 size={11} />
           思维导图
         </button>
         <button
           className={`tab-btn ${leftViewMode === 'markdown' ? 'active' : ''}`}
           onClick={() => setLeftViewMode('markdown')}
         >
-          <FileText size={13} />
+          <FileText size={11} />
           Markdown
         </button>
 

@@ -4,7 +4,8 @@ import toast from 'react-hot-toast'
 import { useAppStore } from '../store/useAppStore'
 import { uploadFile, streamMindmap } from '../services/api'
 import { useExplain } from '../hooks/useExplain'
-import DeepSeekSettingsModal from './DeepSeekSettingsModal'
+import { isElectronMac, isElectronWin } from '../utils/platform'
+import AISettingsModal from './AISettingsModal'
 import FileListDropdown from './FileListDropdown'
 
 export default function TopToolbar() {
@@ -27,7 +28,7 @@ export default function TopToolbar() {
     e.target.value = ''
 
     if (!config.apiKey) {
-      toast.error('请先配置 DeepSeek API Key')
+      toast.error('请先配置 AI 接口 Key')
       return
     }
 
@@ -62,14 +63,17 @@ export default function TopToolbar() {
     }
   }
 
+  const platformClass = isElectronMac ? 'electron-mac' : isElectronWin ? 'electron-win' : ''
+
   return (
-    <header className="toolbar">
+    <header className={`toolbar ${platformClass}`}>
       <div className="toolbar-brand">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--accent)' }}>
-          <circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/>
-          <line x1="8.5" x2="15.5" y1="13.5" y2="17.5"/><line x1="15.5" x2="8.5" y1="6.5" y2="10.5"/>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--accent)' }}>
+          <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+          <path d="M2 17l10 5 10-5"/>
+          <path d="M2 12l10 5 10-5"/>
         </svg>
-        <span>电力政策思维导图</span>
+        <span>AI学习通</span>
       </div>
 
       <div className="toolbar-actions">
@@ -82,7 +86,7 @@ export default function TopToolbar() {
         >
           {isGenerating
             ? <><div className="btn-spinner" /><span>生成中…</span></>
-            : <><Upload size={14} /><span>上传文件</span></>
+            : <><Upload size={12} /><span>上传文件</span></>
           }
         </button>
         <input
@@ -93,12 +97,6 @@ export default function TopToolbar() {
           onChange={handleFileChange}
         />
 
-        <button className="toolbar-btn" onClick={() => setShowSettings(true)}>
-          <Settings size={14} />
-          <span>API 设置</span>
-        </button>
-
-        {/* Divider */}
         <div className="toolbar-divider" />
 
         <button
@@ -108,13 +106,24 @@ export default function TopToolbar() {
           title={canExplain ? '解释选中内容' : '请先选中思维导图节点或文本'}
         >
           {isExplaining
-            ? <><Loader2 size={14} className="spin-icon" /><span>解释中…</span></>
-            : <><Lightbulb size={14} /><span>解释</span></>
+            ? <><Loader2 size={12} className="spin-icon" /><span>解释中…</span></>
+            : <><Lightbulb size={12} /><span>解释</span></>
           }
+        </button>
+
+        {/* Push settings to the far right */}
+        <div style={{ flex: 1 }} />
+
+        <button
+          className="toolbar-btn settings-btn"
+          onClick={() => setShowSettings(true)}
+          title="AI 接口设置"
+        >
+          <Settings size={12} />
         </button>
       </div>
 
-      {showSettings && <DeepSeekSettingsModal onClose={() => setShowSettings(false)} />}
+      {showSettings && <AISettingsModal onClose={() => setShowSettings(false)} />}
     </header>
   )
 }

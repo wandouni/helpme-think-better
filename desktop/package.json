@@ -1,8 +1,8 @@
 {
-  "name": "policy-mindmap-desktop",
-  "productName": "电力政策思维导图",
+  "name": "ai-learner-desktop",
+  "productName": "AI学习通",
   "version": "1.0.0",
-  "description": "电力政策文件快速理解工具 — 桌面版",
+  "description": "AI 驱动的文档学习与思维导图工具 — 桌面版",
   "main": "main.js",
   "scripts": {
     "start": "electron .",

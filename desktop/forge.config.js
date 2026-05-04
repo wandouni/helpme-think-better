@@ -2,11 +2,10 @@
 
 module.exports = {
   packagerConfig: {
-    name: 'PolicyMindmap',
-    executableName: 'policy-mindmap',
-    appBundleId: 'com.policy.mindmap',
-    appCategoryType: 'public.app-category.productivity',
-    // Backend binary directory (built by PyInstaller --onedir)
+    name: 'AILearner',
+    executableName: 'ai-learner',
+    appBundleId: 'com.ailearner.app',
+    appCategoryType: 'public.app-category.education',
     extraResource: ['../backend/dist/server'],
     darwinDarkModeSupport: false,
     // icon: './assets/icon'  // uncomment and add icon.icns / icon.ico
@@ -24,8 +23,8 @@ module.exports = {
       name: '@electron-forge/maker-squirrel',
       platforms: ['win32'],
       config: {
-        name: 'PolicyMindmap',
-        setupExe: 'PolicyMindmap-Setup.exe',
+        name: 'AILearner',
+        setupExe: 'AILearner-Setup.exe',
       },
     },
   ],

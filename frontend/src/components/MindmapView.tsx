@@ -207,17 +207,17 @@ export default function MindmapView({ markdown, fileId, filename }: Props) {
       <svg ref={svgRef} style={{ width: '100%', height: '100%' }} />
       {markdown && (
         <div className="map-controls">
-          <button className="map-ctrl-btn" onClick={handleZoomIn} title="放大"><ZoomIn size={14} /></button>
-          <button className="map-ctrl-btn" onClick={handleZoomOut} title="缩小"><ZoomOut size={14} /></button>
+          <button className="map-ctrl-btn" onClick={handleZoomIn} title="放大"><ZoomIn size={12} /></button>
+          <button className="map-ctrl-btn" onClick={handleZoomOut} title="缩小"><ZoomOut size={12} /></button>
           <div className="map-ctrl-divider" />
-          <button className="map-ctrl-btn" onClick={handleFit} title="适应屏幕"><Maximize2 size={14} /></button>
+          <button className="map-ctrl-btn" onClick={handleFit} title="适应屏幕"><Maximize2 size={12} /></button>
           <button className="map-ctrl-btn" onClick={handleFullscreen} title="全屏">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
             </svg>
           </button>
           <div className="map-ctrl-divider" />
-          <button className="map-ctrl-btn" onClick={handleDownload} title="下载 Markdown"><Download size={14} /></button>
+          <button className="map-ctrl-btn" onClick={handleDownload} title="下载 Markdown"><Download size={12} /></button>
         </div>
       )}
     </div>

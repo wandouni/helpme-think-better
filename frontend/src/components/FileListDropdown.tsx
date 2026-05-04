@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { Folder, ChevronDown, X, Clock } from 'lucide-react'
+import { Folder, ChevronDown, X, Clock, Search } from 'lucide-react'
 import { useAppStore } from '../store/useAppStore'
 
 export default function FileListDropdown() {
@@ -10,7 +10,9 @@ export default function FileListDropdown() {
 
   const [open, setOpen] = useState(false)
   const [confirmId, setConfirmId] = useState<string | null>(null)
+  const [query, setQuery] = useState('')
   const ref = useRef<HTMLDivElement>(null)
+  const searchRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -23,12 +25,21 @@ export default function FileListDropdown() {
     return () => document.removeEventListener('mousedown', handler)
   }, [])
 
+  // Auto-focus search input when dropdown opens
+  useEffect(() => {
+    if (open) setTimeout(() => searchRef.current?.focus(), 60)
+    else setQuery('')
+  }, [open])
+
   const activeFile = files.find((f) => f.id === activeFileId)
+  const filtered = query.trim()
+    ? files.filter((f) => f.filename.toLowerCase().includes(query.toLowerCase()))
+    : files
 
   return (
     <div ref={ref} style={{ position: 'relative' }}>
       <button className="toolbar-btn" onClick={() => setOpen(!open)}>
-        <Folder size={14} />
+        <Folder size={12} />
         <span className="file-btn-name">
           {activeFile ? activeFile.filename : '文件列表'}
         </span>
@@ -37,15 +48,35 @@ export default function FileListDropdown() {
 
       {open && (
         <div className="dropdown">
-          <div className="dropdown-header">已上传文件 ({files.length})</div>
-          {files.length === 0 ? (
+          <div className="dropdown-header">
+            已上传文件 ({files.length})
+          </div>
+
+          {/* Search input */}
+          <div className="dropdown-search">
+            <Search size={11} className="dropdown-search-icon" />
+            <input
+              ref={searchRef}
+              type="text"
+              placeholder="搜索文件名…"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              className="dropdown-search-input"
+            />
+            {query && (
+              <button className="dropdown-search-clear" onClick={() => setQuery('')}>
+                <X size={11} />
+              </button>
+            )}
+          </div>
+
+          {filtered.length === 0 ? (
             <div className="dropdown-empty">
-              <Folder size={24} strokeWidth={1.5} />
-              <span>暂无文件，请上传</span>
+              {query ? <span>没有匹配的文件</span> : <><Folder size={18} strokeWidth={1.5} /><span>暂无文件，请上传</span></>}
             </div>
           ) : (
             <div className="dropdown-list">
-              {files.map((f) => (
+              {filtered.map((f) => (
                 <div
                   key={f.id}
                   className={`dropdown-item ${f.id === activeFileId ? 'active' : ''}`}

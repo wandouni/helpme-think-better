@@ -129,15 +129,34 @@ function createWindow(port) {
   if (menu) Menu.setApplicationMenu(menu)
   else Menu.setApplicationMenu(null)
 
+  const isMac = process.platform === 'darwin'
+  const isWin = process.platform === 'win32'
+
   mainWindow = new BrowserWindow({
     width: 1440,
     height: 900,
     minWidth: 1024,
     minHeight: 600,
-    title: '电力政策思维导图',
-    titleBarStyle: process.platform === 'darwin' ? 'hiddenInset' : 'default',
-    trafficLightPosition: { x: 16, y: 16 },
+    title: 'AI学习通',
     backgroundColor: '#F8FAFC',
+
+    // ── macOS: hide title bar, keep traffic lights, toolbar acts as drag handle
+    ...(isMac && {
+      titleBarStyle: 'hiddenInset',
+      // y = (toolbarHeight - trafficLightDiameter) / 2 = (56 - 16) / 2 = 20
+      trafficLightPosition: { x: 16, y: 20 },
+    }),
+
+    // ── Windows: hide title bar, overlay system buttons over toolbar area
+    ...(isWin && {
+      titleBarStyle: 'hidden',
+      titleBarOverlay: {
+        color: '#FFFFFF',       // matches --surface (toolbar background)
+        symbolColor: '#475569', // matches --text-secondary
+        height: 56,             // matches toolbar height
+      },
+    }),
+
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,

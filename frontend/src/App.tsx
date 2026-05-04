@@ -4,7 +4,7 @@ import TopToolbar from './components/TopToolbar'
 import SplitPane from './components/SplitPane'
 import LeftPanel from './components/LeftPanel'
 import RightPanel from './components/RightPanel'
-import FloatingExplainButton from './components/FloatingExplainButton'
+import FloatingActionButtons from './components/FloatingActionButtons'
 import { useAppStore } from './store/useAppStore'
 import './styles.css'
 
@@ -34,7 +34,7 @@ function SelectionManager() {
   useEffect(() => {
     const onMouseDown = (e: MouseEvent) => {
       const target = e.target as Element
-      if (target.closest('.floating-explain-btn')) return // handled by FloatingExplainButton
+      if (target.closest('.floating-actions')) return // keep selection while user interacts with floating buttons
       const { selectionSource } = useAppStore.getState()
       if (selectionSource === 'mindmap' && !target.closest('svg')) {
         setSelectedContent(null, null)
@@ -53,7 +53,7 @@ export default function App() {
       <SelectionManager />
       <TopToolbar />
       <SplitPane left={<LeftPanel />} right={<RightPanel />} />
-      <FloatingExplainButton />
+      <FloatingActionButtons />
       <Toaster
         position="top-right"
         toastOptions={{

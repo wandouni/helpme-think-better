@@ -36,6 +36,13 @@ interface AppState {
   selectionSource: 'mindmap' | 'markdown' | null
   selectionPos: SelectionPos | null
   chatHistory: Record<string, ChatMessage[]>
+  /** Sets serialized as arrays in localStorage */
+  learnedNodes: Record<string, Set<string>>
+  importantNodes: Record<string, Set<string>>
+  rightPanelTab: 'chat' | 'learning'
+  /** AI learning-path response per file, shown inside LearningPanel */
+  learningPathContent: Record<string, string>
+  isLoadingLearningPath: boolean
   isGenerating: boolean
   isExplaining: boolean
   splitRatio: number
@@ -54,6 +61,14 @@ interface AppState {
   setIsGenerating: (v: boolean) => void
   setIsExplaining: (v: boolean) => void
   setSplitRatio: (v: number) => void
+  // Learning status
+  toggleLearned: (fileId: string, nodeText: string) => void
+  toggleImportant: (fileId: string, nodeText: string) => void
+  setRightPanelTab: (tab: 'chat' | 'learning') => void
+  // Learning path AI response (shown inside LearningPanel, not in chat)
+  setLearningPathContent: (fileId: string, content: string) => void
+  appendLearningPathContent: (fileId: string, chunk: string) => void
+  setIsLoadingLearningPath: (v: boolean) => void
 }
 
 // ── Persistence ───────────────────────────────────────────────────────────
@@ -71,6 +86,9 @@ interface PersistedState {
   mindmapMarkdown: Record<string, string>
   activeFileId: string | null
   chatHistory: Record<string, ChatMessage[]>
+  learnedNodes: Record<string, string[]>   // Set → array for JSON
+  importantNodes: Record<string, string[]>
+  learningPathContent: Record<string, string>
 }
 
 const loadPersistedState = (): PersistedState => {
@@ -78,7 +96,7 @@ const loadPersistedState = (): PersistedState => {
     const raw = localStorage.getItem('policy_mindmap_state')
     if (raw) return JSON.parse(raw)
   } catch {}
-  return { files: [], mindmapMarkdown: {}, activeFileId: null, chatHistory: {} }
+  return { files: [], mindmapMarkdown: {}, activeFileId: null, chatHistory: {}, learnedNodes: {}, importantNodes: {}, learningPathContent: {} }
 }
 
 let saveTimer: ReturnType<typeof setTimeout>
@@ -91,6 +109,14 @@ const saveToStorage = (state: AppState) => {
         mindmapMarkdown: state.mindmapMarkdown,
         activeFileId: state.activeFileId,
         chatHistory: state.chatHistory,
+        learningPathContent: state.learningPathContent,
+        // Convert Sets → arrays for JSON serialization
+        learnedNodes: Object.fromEntries(
+          Object.entries(state.learnedNodes).map(([k, v]) => [k, Array.from(v)])
+        ),
+        importantNodes: Object.fromEntries(
+          Object.entries(state.importantNodes).map(([k, v]) => [k, Array.from(v)])
+        ),
       }
       localStorage.setItem('policy_mindmap_state', JSON.stringify(toSave))
     } catch {}
@@ -100,6 +126,10 @@ const saveToStorage = (state: AppState) => {
 // ── Store ─────────────────────────────────────────────────────────────────
 
 const persisted = loadPersistedState()
+
+// Restore Sets from persisted arrays
+const toSetMap = (raw: Record<string, string[]>): Record<string, Set<string>> =>
+  Object.fromEntries(Object.entries(raw ?? {}).map(([k, v]) => [k, new Set(v)]))
 
 export const useAppStore = create<AppState>((set) => ({
   files: persisted.files.map((f) => ({ ...f, textContent: '' })),
@@ -111,6 +141,11 @@ export const useAppStore = create<AppState>((set) => ({
   selectionSource: null,
   selectionPos: null,
   chatHistory: persisted.chatHistory ?? {},
+  learnedNodes: toSetMap(persisted.learnedNodes ?? {}),
+  importantNodes: toSetMap(persisted.importantNodes ?? {}),
+  learningPathContent: persisted.learningPathContent ?? {},
+  rightPanelTab: 'chat',
+  isLoadingLearningPath: false,
   isGenerating: false,
   isExplaining: false,
   splitRatio: 0.6,
@@ -122,11 +157,12 @@ export const useAppStore = create<AppState>((set) => ({
     set((s) => {
       const files = s.files.filter((f) => f.id !== id)
       const activeFileId = s.activeFileId === id ? (files[0]?.id ?? null) : s.activeFileId
-      const mindmapMarkdown = { ...s.mindmapMarkdown }
-      delete mindmapMarkdown[id]
-      const chatHistory = { ...s.chatHistory }
-      delete chatHistory[id]
-      return { files, activeFileId, mindmapMarkdown, chatHistory }
+      const mindmapMarkdown = { ...s.mindmapMarkdown }; delete mindmapMarkdown[id]
+      const chatHistory = { ...s.chatHistory }; delete chatHistory[id]
+      const learnedNodes = { ...s.learnedNodes }; delete learnedNodes[id]
+      const importantNodes = { ...s.importantNodes }; delete importantNodes[id]
+      const learningPathContent = { ...s.learningPathContent }; delete learningPathContent[id]
+      return { files, activeFileId, mindmapMarkdown, chatHistory, learnedNodes, importantNodes, learningPathContent }
     }),
 
   setActiveFile: (id) =>
@@ -144,10 +180,7 @@ export const useAppStore = create<AppState>((set) => ({
 
   appendMindmapMarkdown: (fileId, chunk) =>
     set((s) => ({
-      mindmapMarkdown: {
-        ...s.mindmapMarkdown,
-        [fileId]: (s.mindmapMarkdown[fileId] ?? '') + chunk,
-      },
+      mindmapMarkdown: { ...s.mindmapMarkdown, [fileId]: (s.mindmapMarkdown[fileId] ?? '') + chunk },
     })),
 
   setLeftViewMode: (mode) => set({ leftViewMode: mode }),
@@ -156,19 +189,14 @@ export const useAppStore = create<AppState>((set) => ({
     set({ selectedContent: content, selectionSource: source, selectionPos: content ? pos : null }),
 
   addChatMessage: (fileId, msg) =>
-    set((s) => ({
-      chatHistory: {
-        ...s.chatHistory,
-        [fileId]: [...(s.chatHistory[fileId] ?? []), msg],
-      },
-    })),
+    set((s) => ({ chatHistory: { ...s.chatHistory, [fileId]: [...(s.chatHistory[fileId] ?? []), msg] } })),
 
   appendChatMessage: (fileId, msgId, chunk) =>
     set((s) => ({
       chatHistory: {
         ...s.chatHistory,
         [fileId]: (s.chatHistory[fileId] ?? []).map((m) =>
-          m.id === msgId ? { ...m, content: m.content + chunk } : m,
+          m.id === msgId ? { ...m, content: m.content + chunk } : m
         ),
       },
     })),
@@ -178,7 +206,7 @@ export const useAppStore = create<AppState>((set) => ({
       chatHistory: {
         ...s.chatHistory,
         [fileId]: (s.chatHistory[fileId] ?? []).map((m) =>
-          m.id === msgId ? { ...m, isError: true } : m,
+          m.id === msgId ? { ...m, isError: true } : m
         ),
       },
     })),
@@ -186,6 +214,49 @@ export const useAppStore = create<AppState>((set) => ({
   setIsGenerating: (v) => set({ isGenerating: v }),
   setIsExplaining: (v) => set({ isExplaining: v }),
   setSplitRatio: (v) => set({ splitRatio: v }),
+
+  toggleLearned: (fileId, nodeText) =>
+    set((s) => {
+      const prev = s.learnedNodes[fileId] ?? new Set<string>()
+      const next = new Set(prev)
+      next.has(nodeText) ? next.delete(nodeText) : next.add(nodeText)
+      // Also remove from important if marking as learned
+      const imp = new Set(s.importantNodes[fileId] ?? new Set<string>())
+      if (next.has(nodeText)) imp.delete(nodeText)
+      return {
+        learnedNodes: { ...s.learnedNodes, [fileId]: next },
+        importantNodes: { ...s.importantNodes, [fileId]: imp },
+      }
+    }),
+
+  toggleImportant: (fileId, nodeText) =>
+    set((s) => {
+      const prev = s.importantNodes[fileId] ?? new Set<string>()
+      const next = new Set(prev)
+      next.has(nodeText) ? next.delete(nodeText) : next.add(nodeText)
+      // Also remove from learned if marking as important
+      const lrn = new Set(s.learnedNodes[fileId] ?? new Set<string>())
+      if (next.has(nodeText)) lrn.delete(nodeText)
+      return {
+        importantNodes: { ...s.importantNodes, [fileId]: next },
+        learnedNodes: { ...s.learnedNodes, [fileId]: lrn },
+      }
+    }),
+
+  setRightPanelTab: (tab) => set({ rightPanelTab: tab }),
+
+  setLearningPathContent: (fileId, content) =>
+    set((s) => ({ learningPathContent: { ...s.learningPathContent, [fileId]: content } })),
+
+  appendLearningPathContent: (fileId, chunk) =>
+    set((s) => ({
+      learningPathContent: {
+        ...s.learningPathContent,
+        [fileId]: (s.learningPathContent[fileId] ?? '') + chunk,
+      },
+    })),
+
+  setIsLoadingLearningPath: (v) => set({ isLoadingLearningPath: v }),
 }))
 
 useAppStore.subscribe((state) => saveToStorage(state))
