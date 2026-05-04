@@ -1,13 +1,13 @@
 from fastapi import APIRouter
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
-from pathlib import Path
 
+from app.config import get_prompts_dir
 from app.services.deepseek import stream_deepseek
 
 router = APIRouter()
 
-SYSTEM_PROMPT = (Path(__file__).parent.parent / "prompts" / "mindmap_system.txt").read_text(encoding="utf-8")
+SYSTEM_PROMPT = (get_prompts_dir() / "mindmap_system.txt").read_text(encoding="utf-8")
 
 
 class MindmapRequest(BaseModel):
