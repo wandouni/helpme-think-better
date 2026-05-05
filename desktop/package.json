@@ -3,6 +3,7 @@
   "productName": "Lumio",
   "version": "1.0.0",
   "description": "Lumio — 文档快速学习与思维导图工具",
+  "author": "Lumio",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
