@@ -11,16 +11,16 @@
 
 ## 功能
 
-| 功能 | 说明 |
-|------|------|
-| 文件上传 | 支持 PDF、Word、Markdown，20MB 以内 |
-| 思维导图 | AI 提炼核心框架，markmap 渲染，流式生成 |
-| 双视图 | 思维导图 ↔ Markdown 文本切换 |
-| 浮动解释 | 选中节点或文字，浮动按钮一键获取 AI 解释 |
-| 学习标记 | 节点标记为「已学习」或「重点」，进度条跟踪 |
-| AI 学习路径 | 基于当前文档和标记状态生成个性化学习建议 |
-| 多文件管理 | 文件列表搜索，每份文件独立保存思维导图和对话 |
-| 解释对话 | 流式输出，支持 Markdown 渲染和重试，刷新后保留 |
+| 功能        | 说明                                           |
+| ----------- | ---------------------------------------------- |
+| 文件上传    | 支持 PDF、Word、Markdown，20MB 以内            |
+| 思维导图    | AI 提炼核心框架，markmap 渲染，流式生成        |
+| 双视图      | 思维导图 ↔ Markdown 文本切换                  |
+| 浮动解释    | 选中节点或文字，浮动按钮一键获取 AI 解释       |
+| 学习标记    | 节点标记为「已学习」或「重点」，进度条跟踪     |
+| AI 学习路径 | 基于当前文档和标记状态生成个性化学习建议       |
+| 多文件管理  | 文件列表搜索，每份文件独立保存思维导图和对话   |
+| 解释对话    | 流式输出，支持 Markdown 渲染和重试，刷新后保留 |
 
 ---
 
@@ -60,11 +60,11 @@ npm run dev
 
 点击右上角 ⚙ 图标，填写：
 
-| 字段 | 说明 | 示例 |
-|------|------|------|
-| API Key | 对应服务的密钥 | `sk-...` |
-| API Base URL | 接口地址（兼容 OpenAI 格式） | `https://api.deepseek.com` |
-| 模型名称 | 要使用的模型 | `deepseek-chat` / `gpt-4o` / `llama3` |
+| 字段         | 说明                         | 示例                                        |
+| ------------ | ---------------------------- | ------------------------------------------- |
+| API Key      | 对应服务的密钥               | `sk-...`                                  |
+| API Base URL | 接口地址（兼容 OpenAI 格式） | `https://api.deepseek.com`                |
+| 模型名称     | 要使用的模型                 | `deepseek-chat` / `gpt-4o` / `llama3` |
 
 配置保存在本地，不上传到任何服务器。Web 版存于浏览器 localStorage，桌面版存于系统用户数据目录（macOS: `~/Library/Application Support/Lumio/`，Windows: `%APPDATA%\Lumio\`）。
 
@@ -98,10 +98,10 @@ cd desktop && npm start
 
 ### 环境要求（打包）
 
-| 工具 | 版本 |
-|------|------|
-| Python | 3.11+ |
-| Node.js | 18+ |
+| 工具     | 版本                       |
+| -------- | -------------------------- |
+| Python   | 3.11+                      |
+| Node.js  | 18+                        |
 | 操作系统 | macOS 11+ 或 Windows 10/11 |
 
 > **注意**：Mac 包须在 Mac 上构建，Windows 包须在 Windows 上构建，不支持交叉编译。
@@ -114,10 +114,10 @@ cd desktop && npm start
 
 输出位于 `desktop/out/make/`：
 
-| 文件 | 说明 |
-|------|------|
-| `Lumio.dmg` | 拖拽安装到 Applications |
-| `zip/darwin/x64/Lumio-*.zip` | 便携版，解压后直接运行 |
+| 文件                           | 说明                    |
+| ------------------------------ | ----------------------- |
+| `Lumio.dmg`                  | 拖拽安装到 Applications |
+| `zip/darwin/x64/Lumio-*.zip` | 便携版，解压后直接运行  |
 
 **首次打开提示「无法验证开发者」**：右键 → 打开 → 仍要打开；或前往「系统设置 → 隐私与安全性」点击「仍要打开」。
 
@@ -152,8 +152,8 @@ scripts\build-win.bat
 
 输出位于 `desktop\out\make\squirrel.windows\x64\`：
 
-| 文件 | 说明 |
-|------|------|
+| 文件                | 说明                           |
+| ------------------- | ------------------------------ |
 | `Lumio-Setup.exe` | 双击安装，自动创建桌面快捷方式 |
 
 **SmartScreen 提示「未知发布者」**：点击「更多信息」→「仍要运行」。
@@ -192,11 +192,11 @@ Lumio.app
 - 已学习 / 重点标记节点
 - AI 学习路径内容
 
-| 版本 | 存储位置 |
-|------|---------|
-| Web 版 | 浏览器 localStorage，清除浏览器数据后丢失 |
-| 桌面版 macOS | `~/Library/Application Support/Lumio/` |
-| 桌面版 Windows | `%APPDATA%\Lumio\` |
+| 版本           | 存储位置                                  |
+| -------------- | ----------------------------------------- |
+| Web 版         | 浏览器 localStorage，清除浏览器数据后丢失 |
+| 桌面版 macOS   | `~/Library/Application Support/Lumio/`  |
+| 桌面版 Windows | `%APPDATA%\Lumio\`                      |
 
 桌面版开发模式与打包版共用同一目录，数据不会因切换模式而丢失。原始文件在后端解析后立即删除，不落盘存储。
 
@@ -215,26 +215,25 @@ Lumio.app
    git commit -m "docs: add product landing page"
    git push
    ```
-
 2. **开启 GitHub Pages**
 
    进入仓库 → **Settings** → **Pages**：
+
    - Source 选择 **Deploy from a branch**
    - Branch 选 `main`，目录选 `/docs`
    - 点击 **Save**
-
 3. **访问落地页**
 
    约 1–2 分钟后，页面可通过以下地址访问：
+
    ```
    https://<你的GitHub用户名>.github.io/<仓库名>/
    ```
-
 4. **更新落地页**
 
    直接编辑 `docs/index.html` 并推送，GitHub Pages 自动重新部署，无需额外操作。
 
-> **提示**：落地页中的 GitHub 链接默认指向 `shenjj/helpme-think-better`，请在 `docs/index.html` 中搜索替换为你自己的仓库路径。
+> **提示**：落地页中的 GitHub 链接默认指向 `wandouni/helpme-think-better`，请在 `docs/index.html` 中搜索替换为你自己的仓库路径。
 
 ---
 
