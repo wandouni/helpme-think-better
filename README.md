@@ -66,7 +66,7 @@ npm run dev
 | API Base URL | 接口地址（兼容 OpenAI 格式） | `https://api.deepseek.com` |
 | 模型名称 | 要使用的模型 | `deepseek-chat` / `gpt-4o` / `llama3` |
 
-配置仅保存在浏览器本地，不上传到任何服务器。
+配置保存在本地，不上传到任何服务器。Web 版存于浏览器 localStorage，桌面版存于系统用户数据目录（macOS: `~/Library/Application Support/Lumio/`，Windows: `%APPDATA%\Lumio\`）。
 
 ---
 
@@ -161,7 +161,7 @@ Lumio.app
 
 ## 数据存储
 
-所有数据保存在浏览器 `localStorage`（键名 `policy_mindmap_state`），包括：
+所有数据通过 `localStorage` 持久化（键名 `policy_mindmap_state`），包括：
 
 - 已上传文件列表（文件名、时间）
 - 思维导图 Markdown 内容
@@ -169,7 +169,49 @@ Lumio.app
 - 已学习 / 重点标记节点
 - AI 学习路径内容
 
-刷新页面数据保留；清除浏览器数据后丢失。原始文件在后端解析后立即删除，不落盘存储。
+| 版本 | 存储位置 |
+|------|---------|
+| Web 版 | 浏览器 localStorage，清除浏览器数据后丢失 |
+| 桌面版 macOS | `~/Library/Application Support/Lumio/` |
+| 桌面版 Windows | `%APPDATA%\Lumio\` |
+
+桌面版开发模式与打包版共用同一目录，数据不会因切换模式而丢失。原始文件在后端解析后立即删除，不落盘存储。
+
+---
+
+## 产品落地页（GitHub Pages）
+
+落地页位于 `docs/index.html`，可直接部署到 GitHub Pages。
+
+### 部署步骤
+
+1. **推送代码到 GitHub**
+
+   ```bash
+   git add docs/index.html
+   git commit -m "docs: add product landing page"
+   git push
+   ```
+
+2. **开启 GitHub Pages**
+
+   进入仓库 → **Settings** → **Pages**：
+   - Source 选择 **Deploy from a branch**
+   - Branch 选 `main`，目录选 `/docs`
+   - 点击 **Save**
+
+3. **访问落地页**
+
+   约 1–2 分钟后，页面可通过以下地址访问：
+   ```
+   https://<你的GitHub用户名>.github.io/<仓库名>/
+   ```
+
+4. **更新落地页**
+
+   直接编辑 `docs/index.html` 并推送，GitHub Pages 自动重新部署，无需额外操作。
+
+> **提示**：落地页中的 GitHub 链接默认指向 `shenjj/helpme-think-better`，请在 `docs/index.html` 中搜索替换为你自己的仓库路径。
 
 ---
 
@@ -177,6 +219,8 @@ Lumio.app
 
 ```
 helpme-think-better/
+├── docs/                      # GitHub Pages 落地页
+│   └── index.html
 ├── frontend/                  # React 前端
 │   └── src/
 │       ├── components/        # UI 组件
@@ -187,7 +231,7 @@ helpme-think-better/
 ├── backend/                   # FastAPI 后端
 │   ├── app/
 │   │   ├── routers/           # API 路由（upload/mindmap/explain）
-│   │   ├── services/          # 文件解析 & DeepSeek 调用
+│   │   ├── services/          # 文件解析（file_parser.py）& AI 接口调用（deepseek.py）
 │   │   └── prompts/           # System prompts
 │   └── server.spec            # PyInstaller 配置
 ├── desktop/                   # Electron 桌面壳

@@ -1,0 +1,788 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lumio — 用 AI 点亮你的学习</title>
+  <meta name="description" content="上传 PDF、Word、Markdown，AI 自动生成结构化思维导图，支持节点解释、学习进度追踪和个性化学习路径推荐。" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #F9F8F5;
+      --surface: #FFFFFF;
+      --orange: #D97757;
+      --orange-hover: #C4623E;
+      --orange-light: #FDF0EA;
+      --text: #3D3929;
+      --text-muted: #8B8577;
+      --border: #EAE7DF;
+      --radius: 14px;
+      --radius-sm: 8px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Nav ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(249, 248, 245, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+    }
+    .nav-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 700;
+      font-size: 20px;
+    }
+    .nav-logo-icon {
+      width: 32px;
+      height: 32px;
+      background: var(--orange);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .nav-link {
+      text-decoration: none;
+      color: var(--text-muted);
+      font-size: 14px;
+      font-weight: 500;
+      padding: 6px 14px;
+      border-radius: 8px;
+      transition: all 0.15s;
+    }
+    .nav-link:hover { background: var(--border); color: var(--text); }
+    .nav-link.primary {
+      background: var(--text);
+      color: #fff;
+    }
+    .nav-link.primary:hover { background: #1a1812; }
+
+    /* ── Hero ── */
+    .hero {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 96px 24px 72px;
+      text-align: center;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--orange-light);
+      color: var(--orange);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 5px 14px;
+      border-radius: 100px;
+      margin-bottom: 28px;
+    }
+    .hero h1 {
+      font-size: clamp(40px, 6vw, 68px);
+      font-weight: 700;
+      line-height: 1.12;
+      letter-spacing: -0.03em;
+      color: var(--text);
+      margin-bottom: 20px;
+    }
+    .hero h1 span { color: var(--orange); }
+    .hero-sub {
+      font-size: clamp(16px, 2vw, 20px);
+      color: var(--text-muted);
+      max-width: 560px;
+      margin: 0 auto 40px;
+    }
+    .hero-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      padding: 12px 24px;
+      border-radius: 10px;
+      text-decoration: none;
+      transition: all 0.15s;
+      cursor: pointer;
+    }
+    .btn-primary {
+      background: var(--orange);
+      color: #fff;
+    }
+    .btn-primary:hover { background: var(--orange-hover); transform: translateY(-1px); }
+    .btn-secondary {
+      background: var(--surface);
+      color: var(--text);
+      border: 1.5px solid var(--border);
+    }
+    .btn-secondary:hover { border-color: #ccc; transform: translateY(-1px); }
+
+    /* ── App mockup ── */
+    .mockup-wrap {
+      max-width: 1000px;
+      margin: 64px auto 0;
+      padding: 0 24px;
+    }
+    .mockup {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      box-shadow: 0 24px 80px rgba(61,57,41,0.10), 0 4px 16px rgba(61,57,41,0.06);
+      overflow: hidden;
+    }
+    .mockup-titlebar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px;
+      background: #F4F2EE;
+      border-bottom: 1px solid var(--border);
+    }
+    .dot { width: 12px; height: 12px; border-radius: 50%; }
+    .dot-r { background: #FF5F57; }
+    .dot-y { background: #FEBC2E; }
+    .dot-g { background: #28C840; }
+    .mockup-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .mock-icon { width: 28px; height: 28px; background: var(--orange-light); border-radius: 6px; display: flex; align-items: center; justify-content: center; }
+    .mock-tabs { display: flex; gap: 4px; margin-left: auto; }
+    .mock-tab {
+      font-size: 12px;
+      font-weight: 500;
+      padding: 4px 12px;
+      border-radius: 100px;
+      color: var(--text-muted);
+    }
+    .mock-tab.active { background: var(--orange); color: #fff; }
+    .mockup-body {
+      display: grid;
+      grid-template-columns: 220px 1fr 280px;
+      height: 380px;
+    }
+    .mock-sidebar {
+      border-right: 1px solid var(--border);
+      padding: 14px 12px;
+      background: #FDFCF9;
+    }
+    .mock-file {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+    .mock-file.active { background: var(--orange-light); color: var(--orange); font-weight: 600; }
+    .mock-file-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+    .mock-mindmap {
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    /* SVG mindmap drawing */
+    .mm-svg { width: 100%; max-width: 380px; }
+    .mock-panel {
+      border-left: 1px solid var(--border);
+      padding: 16px;
+      background: #FDFCF9;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .mock-progress-label { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; }
+    .mock-progress-bar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; margin-top: 6px; }
+    .mock-progress-fill { height: 100%; background: var(--orange); border-radius: 3px; width: 42%; }
+    .mock-stats { display: flex; gap: 8px; }
+    .mock-stat {
+      flex: 1;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px;
+      text-align: center;
+    }
+    .mock-stat-n { font-size: 18px; font-weight: 700; color: var(--orange); }
+    .mock-stat-l { font-size: 10px; color: var(--text-muted); }
+    .mock-chat-bubble {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 11px;
+      color: var(--text);
+      line-height: 1.5;
+    }
+    .mock-chat-bubble.ai { background: var(--orange-light); border-color: transparent; font-size: 11px; }
+    .mock-input-row {
+      display: flex;
+      gap: 6px;
+      margin-top: auto;
+    }
+    .mock-input {
+      flex: 1;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      height: 28px;
+    }
+    .mock-send {
+      width: 28px;
+      height: 28px;
+      background: var(--orange);
+      border-radius: 8px;
+    }
+
+    /* ── Features ── */
+    .section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 100px 24px;
+    }
+    .section-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--orange);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+    }
+    .section-desc {
+      font-size: 17px;
+      color: var(--text-muted);
+      max-width: 520px;
+    }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+      margin-top: 56px;
+    }
+    .feature-card {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .feature-card:hover {
+      border-color: var(--orange);
+      box-shadow: 0 8px 32px rgba(217,119,87,0.10);
+    }
+    .feature-icon {
+      width: 44px;
+      height: 44px;
+      background: var(--orange-light);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 18px;
+      font-size: 22px;
+    }
+    .feature-card h3 {
+      font-size: 17px;
+      font-weight: 650;
+      margin-bottom: 8px;
+    }
+    .feature-card p {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* ── How it works ── */
+    .how-section {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 40px;
+      margin-top: 56px;
+      position: relative;
+    }
+    .steps::before {
+      content: '';
+      position: absolute;
+      top: 28px;
+      left: calc(16.6% + 14px);
+      right: calc(16.6% + 14px);
+      height: 2px;
+      background: linear-gradient(90deg, var(--orange), var(--orange-light));
+      border-radius: 2px;
+    }
+    .step { text-align: center; }
+    .step-num {
+      width: 56px;
+      height: 56px;
+      background: var(--orange);
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: 700;
+      margin: 0 auto 20px;
+      position: relative;
+      z-index: 1;
+    }
+    .step h3 { font-size: 16px; font-weight: 650; margin-bottom: 8px; }
+    .step p { font-size: 14px; color: var(--text-muted); }
+
+    /* ── AI models ── */
+    .models-section {
+      background: var(--bg);
+    }
+    .models-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 40px;
+    }
+    .model-chip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 100px;
+      padding: 8px 18px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .model-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--orange); }
+
+    /* ── Download ── */
+    .download-section {
+      background: linear-gradient(135deg, #3D3929 0%, #2A2820 100%);
+      padding: 100px 24px;
+      text-align: center;
+    }
+    .download-inner { max-width: 700px; margin: 0 auto; }
+    .download-section .section-label { color: var(--orange); }
+    .download-section .section-title { color: #fff; }
+    .download-section .section-desc { color: rgba(255,255,255,0.6); margin: 0 auto 48px; }
+    .download-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      max-width: 560px;
+      margin: 0 auto;
+    }
+    .download-card {
+      background: rgba(255,255,255,0.06);
+      border: 1.5px solid rgba(255,255,255,0.12);
+      border-radius: var(--radius);
+      padding: 28px 24px;
+      text-align: left;
+      text-decoration: none;
+      color: #fff;
+      transition: all 0.2s;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .download-card:hover {
+      background: rgba(255,255,255,0.10);
+      border-color: var(--orange);
+      transform: translateY(-2px);
+    }
+    .download-card-os { font-size: 13px; color: rgba(255,255,255,0.5); font-weight: 500; }
+    .download-card-name { font-size: 18px; font-weight: 700; }
+    .download-card-detail { font-size: 12px; color: rgba(255,255,255,0.4); }
+    .download-web {
+      margin-top: 24px;
+      font-size: 14px;
+      color: rgba(255,255,255,0.5);
+    }
+    .download-web a { color: var(--orange); text-decoration: none; }
+    .download-web a:hover { text-decoration: underline; }
+
+    /* ── Footer ── */
+    footer {
+      padding: 40px 24px;
+      border-top: 1px solid var(--border);
+    }
+    .footer-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .footer-logo { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 16px; color: var(--text); text-decoration: none; }
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a { font-size: 14px; color: var(--text-muted); text-decoration: none; }
+    .footer-links a:hover { color: var(--text); }
+    .footer-copy { font-size: 13px; color: var(--text-muted); }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .mockup-body { grid-template-columns: 1fr; height: auto; }
+      .mock-sidebar, .mock-panel { display: none; }
+      .mock-mindmap { height: 260px; }
+      .steps::before { display: none; }
+      .download-cards { grid-template-columns: 1fr; }
+      .nav-links .nav-link:not(.primary) { display: none; }
+      .footer-inner { flex-direction: column; text-align: center; }
+    }
+
+    /* ── Animations ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .hero h1, .hero-sub, .hero-actions { animation: fadeUp 0.6s ease both; }
+    .hero-sub { animation-delay: 0.08s; }
+    .hero-actions { animation-delay: 0.16s; }
+  </style>
+</head>
+<body>
+
+<!-- ── Nav ───────────────────────────────────────────────── -->
+<nav>
+  <div class="nav-inner">
+    <a class="nav-logo" href="#">
+      <div class="nav-logo-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+          <rect x="2" y="14" width="20" height="4" rx="2" fill="rgba(255,255,255,0.5)"/>
+          <rect x="5" y="8" width="14" height="4" rx="2" fill="rgba(255,255,255,0.75)"/>
+          <rect x="8" y="2" width="8" height="4" rx="2" fill="#fff"/>
+        </svg>
+      </div>
+      Lumio
+    </a>
+    <div class="nav-links">
+      <a class="nav-link" href="#features">功能</a>
+      <a class="nav-link" href="#how">使用方式</a>
+      <a class="nav-link" href="#download">下载</a>
+      <a class="nav-link primary" href="https://github.com/shenjj/helpme-think-better" target="_blank">GitHub ↗</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ── Hero ──────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="hero-badge">
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><circle cx="6" cy="6" r="4"/></svg>
+    AI 驱动的智能学习工具
+  </div>
+  <h1>让文档变成<br /><span>知识地图</span></h1>
+  <p class="hero-sub">上传 PDF、Word 或 Markdown，AI 自动提炼核心框架，生成可交互的思维导图，帮你高效掌握任何文档。</p>
+  <div class="hero-actions">
+    <a class="btn btn-primary" href="#download">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 3v13M6 11l6 6 6-6"/><path d="M3 21h18"/></svg>
+      下载桌面版
+    </a>
+    <a class="btn btn-secondary" href="https://github.com/shenjj/helpme-think-better" target="_blank">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.58 2 12.26c0 4.54 2.87 8.39 6.84 9.75.5.09.68-.22.68-.49 0-.24-.01-.87-.01-1.71-2.78.62-3.37-1.37-3.37-1.37-.45-1.18-1.1-1.49-1.1-1.49-.9-.63.07-.62.07-.62 1 .07 1.52 1.05 1.52 1.05.88 1.55 2.31 1.1 2.87.84.09-.65.34-1.1.62-1.35-2.22-.26-4.56-1.14-4.56-5.07 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.71 0 0 .84-.27 2.75 1.05a9.4 9.4 0 012.5-.35c.85 0 1.7.12 2.5.35 1.91-1.32 2.75-1.05 2.75-1.05.55 1.41.2 2.45.1 2.71.64.72 1.03 1.63 1.03 2.75 0 3.94-2.34 4.81-4.57 5.06.36.32.68.94.68 1.9 0 1.37-.01 2.48-.01 2.81 0 .27.18.59.69.49C19.14 20.65 22 16.8 22 12.26 22 6.58 17.52 2 12 2z"/></svg>
+      查看源码
+    </a>
+  </div>
+</section>
+
+<!-- ── App mockup ─────────────────────────────────────────── -->
+<div class="mockup-wrap">
+  <div class="mockup">
+    <div class="mockup-titlebar">
+      <div class="dot dot-r"></div>
+      <div class="dot dot-y"></div>
+      <div class="dot dot-g"></div>
+      <span style="margin-left:12px;font-size:13px;color:#999;">Lumio</span>
+    </div>
+    <div class="mockup-toolbar">
+      <div class="mock-icon">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+          <rect x="2" y="14" width="20" height="4" rx="2" fill="#D97757" opacity=".5"/>
+          <rect x="5" y="8" width="14" height="4" rx="2" fill="#D97757" opacity=".75"/>
+          <rect x="8" y="2" width="8" height="4" rx="2" fill="#D97757"/>
+        </svg>
+      </div>
+      <span style="font-size:13px;font-weight:600;color:#3D3929;">Lumio</span>
+      <div class="mock-tabs">
+        <div class="mock-tab active">思维导图</div>
+        <div class="mock-tab">Markdown</div>
+      </div>
+      <div style="margin-left:auto;display:flex;gap:6px;">
+        <div style="width:28px;height:28px;border-radius:6px;background:#F4F2EE;border:1px solid #EAE7DF;"></div>
+        <div style="width:28px;height:28px;border-radius:6px;background:#F4F2EE;border:1px solid #EAE7DF;"></div>
+      </div>
+    </div>
+    <div class="mockup-body">
+      <!-- sidebar -->
+      <div class="mock-sidebar">
+        <div style="font-size:11px;font-weight:600;color:#8B8577;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;">文件库</div>
+        <div class="mock-file active">
+          <div class="mock-file-dot"></div>
+          南方区域辅助服务市场.pdf
+        </div>
+        <div class="mock-file">
+          <div class="mock-file-dot"></div>
+          电力系统稳定性分析.docx
+        </div>
+        <div class="mock-file">
+          <div class="mock-file-dot"></div>
+          可再生能源并网规范.md
+        </div>
+        <div style="margin-top:16px;padding:8px 10px;border-radius:8px;border:1.5px dashed #EAE7DF;text-align:center;font-size:11px;color:#8B8577;cursor:pointer;">
+          + 上传文件
+        </div>
+      </div>
+      <!-- mindmap -->
+      <div class="mock-mindmap">
+        <svg class="mm-svg" viewBox="0 0 380 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- center root -->
+          <rect x="140" y="130" width="100" height="34" rx="8" fill="#D97757"/>
+          <text x="190" y="152" text-anchor="middle" fill="#fff" font-family="Inter,sans-serif" font-size="12" font-weight="600">辅助服务市场</text>
+          <!-- branch lines -->
+          <path d="M140 147 Q80 147 60 80" stroke="#EAE7DF" stroke-width="1.5" fill="none"/>
+          <path d="M140 147 Q80 147 60 147" stroke="#EAE7DF" stroke-width="1.5" fill="none"/>
+          <path d="M140 147 Q80 147 60 220" stroke="#EAE7DF" stroke-width="1.5" fill="none"/>
+          <path d="M240 147 Q300 147 320 80" stroke="#EAE7DF" stroke-width="1.5" fill="none"/>
+          <path d="M240 147 Q300 147 320 147" stroke="#EAE7DF" stroke-width="1.5" fill="none"/>
+          <path d="M240 147 Q300 147 320 220" stroke="#EAE7DF" stroke-width="1.5" fill="none"/>
+          <!-- left nodes -->
+          <rect x="2" y="64" width="72" height="28" rx="6" fill="#FDF0EA" stroke="#D97757" stroke-width="1.5"/>
+          <text x="38" y="82" text-anchor="middle" fill="#D97757" font-family="Inter,sans-serif" font-size="10" font-weight="600">市场规则</text>
+          <rect x="2" y="132" width="72" height="28" rx="6" fill="#fff" stroke="#EAE7DF" stroke-width="1"/>
+          <text x="38" y="150" text-anchor="middle" fill="#3D3929" font-family="Inter,sans-serif" font-size="10">参与主体</text>
+          <rect x="2" y="204" width="72" height="28" rx="6" fill="#fff" stroke="#EAE7DF" stroke-width="1"/>
+          <text x="38" y="222" text-anchor="middle" fill="#3D3929" font-family="Inter,sans-serif" font-size="10">报价机制</text>
+          <!-- right nodes -->
+          <rect x="306" y="64" width="72" height="28" rx="6" fill="#fff" stroke="#EAE7DF" stroke-width="1"/>
+          <text x="342" y="82" text-anchor="middle" fill="#3D3929" font-family="Inter,sans-serif" font-size="10">计量结算</text>
+          <rect x="306" y="132" width="72" height="28" rx="6" fill="#fff" stroke="#EAE7DF" stroke-width="1"/>
+          <text x="342" y="150" text-anchor="middle" fill="#3D3929" font-family="Inter,sans-serif" font-size="10">监管机制</text>
+          <rect x="306" y="204" width="72" height="28" rx="6" fill="#fff" stroke="#EAE7DF" stroke-width="1"/>
+          <text x="342" y="222" text-anchor="middle" fill="#3D3929" font-family="Inter,sans-serif" font-size="10">典型案例</text>
+          <!-- learned badge -->
+          <circle cx="74" cy="64" r="7" fill="#22C55E"/>
+          <text x="74" y="68" text-anchor="middle" fill="#fff" font-family="Inter,sans-serif" font-size="8" font-weight="700">✓</text>
+        </svg>
+      </div>
+      <!-- right panel -->
+      <div class="mock-panel">
+        <div>
+          <div class="mock-progress-label">学习进度</div>
+          <div class="mock-progress-bar"><div class="mock-progress-fill"></div></div>
+          <div style="font-size:11px;color:#8B8577;margin-top:4px;">3 / 7 节点已完成</div>
+        </div>
+        <div class="mock-stats">
+          <div class="mock-stat"><div class="mock-stat-n">3</div><div class="mock-stat-l">已学习</div></div>
+          <div class="mock-stat"><div class="mock-stat-n">2</div><div class="mock-stat-l">重点</div></div>
+        </div>
+        <div style="font-size:11px;font-weight:600;color:#8B8577;">AI 解释</div>
+        <div class="mock-chat-bubble">请解释「市场规则」节点</div>
+        <div class="mock-chat-bubble ai">辅助服务市场规则规定了调频、备用等服务的准入条件、申报方式及考核标准...</div>
+        <div class="mock-input-row">
+          <div class="mock-input"></div>
+          <div class="mock-send"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Features ──────────────────────────────────────────── -->
+<section class="section" id="features">
+  <div class="section-label">核心功能</div>
+  <h2 class="section-title">把枯燥文档变成<br />高效学习体验</h2>
+  <p class="section-desc">覆盖文档学习全流程——从内容理解到进度追踪，再到个性化路径推荐。</p>
+
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">🗺️</div>
+      <h3>AI 思维导图</h3>
+      <p>上传即解析，AI 自动提炼文档核心框架，流式生成结构化思维导图，直观呈现知识脉络。</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">💬</div>
+      <h3>节点智能解释</h3>
+      <p>点击任意思维导图节点或选中文字，浮动按钮一键获取 AI 深度解释，流式输出，刷新后记录保留。</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📊</div>
+      <h3>学习进度追踪</h3>
+      <p>标记节点为「已学习」或「重点」，进度条实时更新，清晰掌握自己的学习状态。</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🎯</div>
+      <h3>AI 学习路径</h3>
+      <p>根据当前文档内容和标记状态，AI 生成个性化学习建议，优先推荐最关键的知识节点。</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔄</div>
+      <h3>双视图切换</h3>
+      <p>思维导图与 Markdown 文本视图无缝切换，满足不同阅读和学习习惯。</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📁</div>
+      <h3>多文件管理</h3>
+      <p>支持同时管理多份文档，可搜索，每份文件独立保存思维导图、对话记录和学习标记。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── How it works ───────────────────────────────────────── -->
+<div class="how-section">
+  <section class="section" id="how">
+    <div class="section-label">使用方式</div>
+    <h2 class="section-title">三步开启高效学习</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h3>上传文档</h3>
+        <p>支持 PDF、Word、Markdown，20 MB 以内，拖拽即可上传。</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h3>AI 生成导图</h3>
+        <p>AI 自动解析内容，流式生成结构化思维导图，秒级响应。</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h3>交互式学习</h3>
+        <p>点击节点获取解释，标记进度，获取 AI 个性化学习建议。</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ── AI models ─────────────────────────────────────────── -->
+<section class="section models-section">
+  <div class="section-label">兼容性</div>
+  <h2 class="section-title">接入你喜欢的 AI</h2>
+  <p class="section-desc">兼容所有 OpenAI 格式接口，自由选择 AI 提供商，API Key 仅存在本地，不上传任何服务器。</p>
+  <div class="models-grid">
+    <div class="model-chip"><div class="model-dot"></div>DeepSeek</div>
+    <div class="model-chip"><div class="model-dot"></div>OpenAI (GPT-4o)</div>
+    <div class="model-chip"><div class="model-dot"></div>Claude (OpenAI 格式代理)</div>
+    <div class="model-chip"><div class="model-dot"></div>Ollama 本地模型</div>
+    <div class="model-chip"><div class="model-dot"></div>Moonshot (Kimi)</div>
+    <div class="model-chip"><div class="model-dot"></div>其他兼容 OpenAI 格式的接口</div>
+  </div>
+</section>
+
+<!-- ── Download ───────────────────────────────────────────── -->
+<section class="download-section" id="download">
+  <div class="download-inner">
+    <div class="section-label">立即体验</div>
+    <h2 class="section-title" style="color:#fff">下载桌面版</h2>
+    <p class="section-desc">原生桌面体验，内置 Python 后端，无需额外环境，双击即用。</p>
+    <div class="download-cards">
+      <a class="download-card" href="https://github.com/shenjj/helpme-think-better/releases/latest" target="_blank">
+        <div class="download-card-os">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="display:inline;vertical-align:-2px;margin-right:4px;opacity:.6"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+          macOS
+        </div>
+        <div class="download-card-name">Mac 版 (.dmg)</div>
+        <div class="download-card-detail">macOS 11+ · Apple Silicon & Intel</div>
+        <div style="margin-top:4px;font-size:13px;color:rgba(255,255,255,0.7);display:flex;align-items:center;gap:4px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v13M6 11l6 6 6-6"/><path d="M3 21h18"/></svg>
+          下载
+        </div>
+      </a>
+      <a class="download-card" href="https://github.com/shenjj/helpme-think-better/releases/latest" target="_blank">
+        <div class="download-card-os">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="display:inline;vertical-align:-2px;margin-right:4px;opacity:.6"><path d="M3 3h8v8H3zm10 0h8v8h-8zM3 13h8v8H3zm10 0h8v8h-8z"/></svg>
+          Windows
+        </div>
+        <div class="download-card-name">Win 版 (.exe)</div>
+        <div class="download-card-detail">Windows 10/11 · x64</div>
+        <div style="margin-top:4px;font-size:13px;color:rgba(255,255,255,0.7);display:flex;align-items:center;gap:4px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v13M6 11l6 6 6-6"/><path d="M3 21h18"/></svg>
+          下载
+        </div>
+      </a>
+    </div>
+    <p class="download-web">
+      也可以 <a href="https://github.com/shenjj/helpme-think-better#web-版快速开始">自托管 Web 版</a>，三行命令启动。
+    </p>
+  </div>
+</section>
+
+<!-- ── Footer ─────────────────────────────────────────────── -->
+<footer>
+  <div class="footer-inner">
+    <a class="footer-logo" href="#">
+      <div class="nav-logo-icon" style="width:24px;height:24px;border-radius:6px;">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
+          <rect x="2" y="14" width="20" height="4" rx="2" fill="rgba(255,255,255,0.5)"/>
+          <rect x="5" y="8" width="14" height="4" rx="2" fill="rgba(255,255,255,0.75)"/>
+          <rect x="8" y="2" width="8" height="4" rx="2" fill="#fff"/>
+        </svg>
+      </div>
+      Lumio
+    </a>
+    <div class="footer-links">
+      <a href="https://github.com/shenjj/helpme-think-better" target="_blank">GitHub</a>
+      <a href="https://github.com/shenjj/helpme-think-better/issues" target="_blank">反馈问题</a>
+      <a href="https://github.com/shenjj/helpme-think-better/releases" target="_blank">版本历史</a>
+    </div>
+    <div class="footer-copy">MIT License · Lumio</div>
+  </div>
+</footer>
+
+</body>
+</html>
