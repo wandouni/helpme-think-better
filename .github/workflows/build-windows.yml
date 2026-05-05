@@ -1,0 +1,79 @@
+name: Build Windows Installer
+
+on:
+  # 手动触发：在 GitHub 仓库 Actions 页面点击 "Run workflow"
+  workflow_dispatch:
+  # 推送 v* 标签时自动触发（如 git tag v1.0.0 && git push --tags）
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # ── Step 1: Build frontend ────────────────────────────
+      - name: Install frontend deps
+        working-directory: frontend
+        run: npm install
+
+      - name: Build frontend
+        working-directory: frontend
+        run: npm run build
+
+      # ── Step 2: Copy dist → backend/static ───────────────
+      - name: Copy frontend to backend/static
+        shell: pwsh
+        run: |
+          if (Test-Path backend\static) { Remove-Item -Recurse -Force backend\static }
+          Copy-Item -Recurse frontend\dist backend\static
+
+      # ── Step 3: PyInstaller ───────────────────────────────
+      - name: Install Python deps + PyInstaller
+        working-directory: backend
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pyinstaller
+
+      - name: Run PyInstaller
+        working-directory: backend
+        run: pyinstaller server.spec --clean --noconfirm
+
+      # ── Step 4: Electron Forge ────────────────────────────
+      - name: Install desktop deps
+        working-directory: desktop
+        run: npm install
+
+      - name: Build Windows installer
+        working-directory: desktop
+        run: npm run make -- --platform win32
+
+      # ── Upload artifact ───────────────────────────────────
+      - name: Upload installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: Lumio-Windows
+          path: desktop/out/make/squirrel.windows/x64/Lumio-Setup.exe
+          retention-days: 30
+
+      # 如果是 tag 触发，同时发布到 GitHub Release
+      - name: Upload to Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: desktop/out/make/squirrel.windows/x64/Lumio-Setup.exe
