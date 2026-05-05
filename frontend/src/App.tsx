@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { Toaster } from 'react-hot-toast'
+import toast, { Toaster, ToastBar } from 'react-hot-toast'
 import TopToolbar from './components/TopToolbar'
 import SplitPane from './components/SplitPane'
 import LeftPanel from './components/LeftPanel'
@@ -55,21 +55,37 @@ export default function App() {
       <SplitPane left={<LeftPanel />} right={<RightPanel />} />
       <FloatingActionButtons />
       <Toaster
-        position="top-right"
+        position="top-center"
         toastOptions={{
           style: {
-            background: '#fff',
-            color: '#0F172A',
-            border: '1px solid #E2E8F0',
+            background: '#FFFFFF',
+            color: '#3D3929',
+            border: '1px solid #E6E2D9',
             borderRadius: '10px',
-            boxShadow: '0 4px 12px rgba(15,23,42,0.1)',
-            fontSize: '13px',
-            fontFamily: 'Inter, sans-serif',
+            boxShadow: '0 4px 16px rgba(60,55,40,0.12)',
+            fontSize: '12px',
+            fontFamily: 'Inter, -apple-system, sans-serif',
+            maxWidth: '380px',
+            cursor: 'pointer',
           },
-          success: { iconTheme: { primary: '#16A34A', secondary: '#fff' } },
-          error: { iconTheme: { primary: '#DC2626', secondary: '#fff' } },
+          success: { iconTheme: { primary: '#2F8C52', secondary: '#fff' } },
+          error:   { iconTheme: { primary: '#C13B3B', secondary: '#fff' } },
         }}
-      />
+      >
+        {(t) => (
+          <ToastBar toast={t}>
+            {({ icon, message }) => (
+              <div
+                onClick={() => toast.dismiss(t.id)}
+                style={{ display: 'flex', alignItems: 'center', gap: 8, width: '100%' }}
+              >
+                {icon}
+                {message}
+              </div>
+            )}
+          </ToastBar>
+        )}
+      </Toaster>
     </div>
   )
 }
