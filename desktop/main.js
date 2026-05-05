@@ -37,6 +37,7 @@ function getBackendExe() {
   return path.join(process.resourcesPath, 'server', bin)
 }
 
+// Wait for packaged backend via HTTP /health
 function waitForBackend(port, timeoutMs = 20_000) {
   const deadline = Date.now() + timeoutMs
   return new Promise((resolve, reject) => {
@@ -47,6 +48,26 @@ function waitForBackend(port, timeoutMs = 20_000) {
       }).on('error', schedule)
     }
     const schedule = () => setTimeout(attempt, 400)
+    attempt()
+  })
+}
+
+// Wait for dev Vite server via raw TCP connect (Vite has no /health route)
+function waitForPort(port, timeoutMs = 15_000) {
+  const deadline = Date.now() + timeoutMs
+  return new Promise((resolve) => {
+    const attempt = () => {
+      const socket = new net.Socket()
+      socket.setTimeout(500)
+      socket.once('connect', () => { socket.destroy(); resolve() })
+      socket.once('error', retry)
+      socket.once('timeout', () => { socket.destroy(); retry() })
+      socket.connect(port, '127.0.0.1')
+    }
+    const retry = () => {
+      if (Date.now() >= deadline) { resolve(); return } // proceed anyway on timeout
+      setTimeout(attempt, 200)
+    }
     attempt()
   })
 }
@@ -141,19 +162,20 @@ function createWindow(port) {
     backgroundColor: '#F8FAFC',
 
     // ── macOS: hide title bar, keep traffic lights, toolbar acts as drag handle
+    // trafficLightPosition uses logical CSS pixels (same unit as height: 35px).
+    // y=20 places button center roughly at the visual midpoint of the 35 px toolbar.
     ...(isMac && {
       titleBarStyle: 'hiddenInset',
-      // y = (toolbarHeight - trafficLightDiameter) / 2 = (56 - 16) / 2 = 20
-      trafficLightPosition: { x: 16, y: 20 },
+      trafficLightPosition: { x: 12, y: 8 },
     }),
 
     // ── Windows: hide title bar, overlay system buttons over toolbar area
     ...(isWin && {
       titleBarStyle: 'hidden',
       titleBarOverlay: {
-        color: '#FFFFFF',       // matches --surface (toolbar background)
-        symbolColor: '#475569', // matches --text-secondary
-        height: 56,             // matches toolbar height
+        color: '#EBEBEB',       // matches --surface-2 (toolbar background)
+        symbolColor: '#616161', // matches --text-secondary
+        height: 35,             // matches toolbar height
       },
     }),
 
@@ -165,13 +187,23 @@ function createWindow(port) {
     show: false,
   })
 
-  // Packaged → FastAPI serves everything; dev → Vite dev server
+  // Packaged → FastAPI; dev → Vite dev server (use 'localhost', not '127.0.0.1',
+  // because Vite may bind to IPv6 ::1 which 127.0.0.1 can't reach)
   const url = app.isPackaged
     ? `http://127.0.0.1:${port}`
-    : 'http://127.0.0.1:5173'
+    : 'http://localhost:5173'
 
   mainWindow.loadURL(url)
   mainWindow.once('ready-to-show', () => mainWindow.show())
+
+  // Dev mode: auto-retry if Vite isn't ready yet when Electron opens
+  if (!app.isPackaged) {
+    mainWindow.webContents.on('did-fail-load', (_e, errorCode) => {
+      if (errorCode === -102) { // ERR_CONNECTION_REFUSED
+        setTimeout(() => mainWindow.loadURL(url), 600)
+      }
+    })
+  }
 
   // External links open in the system browser
   mainWindow.webContents.setWindowOpenHandler(({ url: u }) => {

@@ -114,7 +114,7 @@ input  { font-family: inherit; }
 
 /* Desktop window-chrome */
 .electron-mac, .electron-win { -webkit-app-region: drag; }
-.electron-mac { padding-left: 76px; }
+.electron-mac { padding-left: 92px; }
 .electron-win { padding-right: 144px; }
 .electron-mac button, .electron-mac input, .electron-mac a,
 .electron-mac label, .electron-mac .dropdown,
