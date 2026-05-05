@@ -25,6 +25,8 @@ module.exports = {
       config: {
         name: 'Lumio',
         setupExe: 'Lumio-Setup.exe',
+        authors: 'Lumio',
+        description: '文档快速学习与思维导图工具',
       },
     },
   ],
