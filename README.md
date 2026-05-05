@@ -1,4 +1,4 @@
-# AI学习通
+# Lumio
 
 文档快速学习工具。上传 PDF / Word / Markdown 文件，AI 自动生成结构化思维导图，支持节点解释、学习进度追踪和个性化学习路径推荐。
 
@@ -116,8 +116,8 @@ cd desktop && npm start
 
 | 文件 | 说明 |
 |------|------|
-| `AILearner.dmg` | 拖拽安装到 Applications |
-| `zip/darwin/x64/AILearner-*.zip` | 便携版，解压后直接运行 |
+| `Lumio.dmg` | 拖拽安装到 Applications |
+| `zip/darwin/x64/Lumio-*.zip` | 便携版，解压后直接运行 |
 
 **首次打开提示「无法验证开发者」**：右键 → 打开 → 仍要打开；或前往「系统设置 → 隐私与安全性」点击「仍要打开」。
 
@@ -131,7 +131,7 @@ scripts\build-win.bat
 
 | 文件 | 说明 |
 |------|------|
-| `AILearner-Setup.exe` | 双击安装，自动创建桌面快捷方式 |
+| `Lumio-Setup.exe` | 双击安装，自动创建桌面快捷方式 |
 
 **SmartScreen 提示「未知发布者」**：点击「更多信息」→「仍要运行」。
 
@@ -147,7 +147,7 @@ scripts\build-win.bat
 ### 桌面版工作原理
 
 ```
-AILearner.app
+Lumio.app
 └── Contents/Resources/
     ├── server/          ← PyInstaller 打包的 Python 后端
     │   ├── server       ← 可执行文件（FastAPI + 全部依赖）

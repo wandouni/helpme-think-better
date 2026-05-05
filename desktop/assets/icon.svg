@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <!-- Warm background -->
+  <rect width="1024" height="1024" rx="224" fill="#F9F8F5"/>
+
+  <!-- Subtle inner shadow ring -->
+  <rect width="1024" height="1024" rx="224" fill="none"
+        stroke="#E6E2D9" stroke-width="2" opacity="0.8"/>
+
+  <!-- Layers icon — centered, Claude orange -->
+  <g transform="translate(512,512)" stroke="#D97757" stroke-width="62"
+     stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <!-- top layer -->
+    <path d="M0,-210 L-280,-70 L0,70 L280,-70 Z"/>
+    <!-- middle layer line -->
+    <polyline points="-280,70 0,210 280,70"/>
+    <!-- bottom layer line -->
+    <polyline points="-280,0 0,140 280,0"/>
+  </g>
+</svg>

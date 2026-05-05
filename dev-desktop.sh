@@ -49,6 +49,23 @@ if [ ! -d "node_modules" ]; then
   ELECTRON_MIRROR="https://npmmirror.com/mirrors/electron/" npm install --prefer-offline
 fi
 
+# Patch Electron bundle Info.plist so macOS Dock shows "Lumio" instead of "Electron".
+# This must be repeated after each `npm install` (it resets the node_modules binary).
+_PLIST="$ROOT/desktop/node_modules/electron/dist/Electron.app/Contents/Info.plist"
+if [ -f "$_PLIST" ]; then
+  /usr/libexec/PlistBuddy -c "Set :CFBundleName Lumio" "$_PLIST" 2>/dev/null
+  /usr/libexec/PlistBuddy -c "Set :CFBundleDisplayName Lumio" "$_PLIST" 2>/dev/null
+  /usr/libexec/PlistBuddy -c "Set :CFBundleIdentifier com.lumio.app" "$_PLIST" 2>/dev/null
+  # Flush LaunchServices DB so macOS re-reads the updated bundle name.
+  # -kill rebuilds the entire LS database, which clears the cached "Electron"
+  # name keyed to com.github.Electron bundle ID.
+  _LSREG="/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister"
+  "$_LSREG" -kill -r -domain local -domain system -domain user 2>/dev/null || true
+  sleep 2
+  killall Dock 2>/dev/null || true
+  sleep 1
+fi
+
 npx electron . &
 ELECTRON_PID=$!
 echo "  Electron 已启动 (pid $ELECTRON_PID)"

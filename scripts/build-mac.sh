@@ -53,14 +53,14 @@ echo "   ✓ Electron 打包完成"
 # ── Step 5: Wrap .app into .dmg using built-in hdiutil ───────
 echo ""
 echo "▶ [5/5] 生成 DMG 安装包..."
-APP_DIR="$OUT/AILearner-darwin-x64"
-APP_PATH="$APP_DIR/AILearner.app"
-DMG_PATH="$OUT/make/AILearner.dmg"
+APP_DIR="$OUT/Lumio-darwin-x64"
+APP_PATH="$APP_DIR/Lumio.app"
+DMG_PATH="$OUT/make/Lumio.dmg"
 TMP_DMG="$OUT/make/tmp_rw.dmg"
 mkdir -p "$OUT/make"
 
 # Create a writable DMG, copy .app in, convert to read-only compressed DMG
-hdiutil create -volname "PolicyMindmap" -srcfolder "$APP_PATH" \
+hdiutil create -volname "Lumio" -srcfolder "$APP_PATH" \
   -ov -format UDZO -o "$DMG_PATH" >/dev/null
 echo "   ✓ DMG 生成完成"
 
@@ -69,8 +69,8 @@ echo "================================================================"
 echo " ✅ 构建成功！"
 echo ""
 echo " 安装包: $OUT/make/"
-echo "   • AILearner.dmg               — 拖拽安装到 Applications"
-echo "   • zip/darwin/x64/AILearner-*  — 便携版，解压后直接运行"
+echo "   • Lumio.dmg               — 拖拽安装到 Applications"
+echo "   • zip/darwin/x64/Lumio-*  — 便携版，解压后直接运行"
 echo ""
 echo " ⚠  首次打开时如遇到安全提示（无法验证开发者），请在"
 echo "    系统设置 → 隐私与安全性 中点击「仍要打开」"

@@ -1,8 +1,8 @@
 {
-  "name": "ai-learner-desktop",
-  "productName": "AI学习通",
+  "name": "lumio",
+  "productName": "Lumio",
   "version": "1.0.0",
-  "description": "AI 驱动的文档学习与思维导图工具 — 桌面版",
+  "description": "Lumio — 文档快速学习与思维导图工具",
   "main": "main.js",
   "scripts": {
     "start": "electron .",

@@ -11,6 +11,11 @@ const DEFAULT_PORT = 8765
 let backendProcess = null
 let mainWindow = null
 
+// Set app name early so macOS Dock label shows correctly in dev mode
+app.setName('Lumio')
+// Unify userData dir so dev mode and packaged app share the same localStorage
+app.setPath('userData', path.join(app.getPath('appData'), 'Lumio'))
+
 // ── Port helpers ──────────────────────────────────────────────────────────
 
 function isPortFree(port) {
@@ -158,7 +163,7 @@ function createWindow(port) {
     height: 900,
     minWidth: 1024,
     minHeight: 600,
-    title: 'AI学习通',
+    title: 'Lumio',
     backgroundColor: '#F8FAFC',
 
     // ── macOS: hide title bar, keep traffic lights, toolbar acts as drag handle
@@ -215,6 +220,17 @@ function createWindow(port) {
 // ── App lifecycle ─────────────────────────────────────────────────────────
 
 app.whenReady().then(async () => {
+  // Set Dock icon on macOS in dev mode
+  // (packaged apps get the icon from forge.config.js automatically)
+  if (process.platform === 'darwin' && !app.isPackaged) {
+    const { nativeImage } = require('electron')
+    const devIcon = path.join(__dirname, 'assets', 'icon.iconset', 'icon_512x512.png')
+    if (fs.existsSync(devIcon)) {
+      const img = nativeImage.createFromPath(devIcon)
+      if (!img.isEmpty()) app.dock.setIcon(img)
+    }
+  }
+
   const port = app.isPackaged ? await findFreePort() : 8000
 
   if (app.isPackaged) {

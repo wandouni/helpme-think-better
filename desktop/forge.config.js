@@ -2,13 +2,13 @@
 
 module.exports = {
   packagerConfig: {
-    name: 'AILearner',
-    executableName: 'ai-learner',
-    appBundleId: 'com.ailearner.app',
+    name: 'Lumio',
+    executableName: 'lumio',
+    appBundleId: 'com.lumio.app',
     appCategoryType: 'public.app-category.education',
     extraResource: ['../backend/dist/server'],
     darwinDarkModeSupport: false,
-    // icon: './assets/icon'  // uncomment and add icon.icns / icon.ico
+    icon: './assets/icon',   // .icns on macOS, .ico on Windows (no extension needed)
   },
   rebuildConfig: {},
   makers: [
@@ -23,8 +23,8 @@ module.exports = {
       name: '@electron-forge/maker-squirrel',
       platforms: ['win32'],
       config: {
-        name: 'AILearner',
-        setupExe: 'AILearner-Setup.exe',
+        name: 'Lumio',
+        setupExe: 'Lumio-Setup.exe',
       },
     },
   ],

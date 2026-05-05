@@ -61,7 +61,7 @@ echo ================================================================
 echo  √ 构建成功！
 echo.
 echo  安装包: %ROOT%\desktop\out\make\squirrel.windows\x64\
-echo    PolicyMindmap-Setup.exe  — 双击安装
+echo    Lumio-Setup.exe  — 双击安装
 echo.
 echo  提示: 首次运行 Windows SmartScreen 可能提示未知发布者，
 echo        点击「更多信息」→「仍要运行」即可。
