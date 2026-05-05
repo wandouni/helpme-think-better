@@ -123,6 +123,29 @@ cd desktop && npm start
 
 ### Windows 打包
 
+> **推荐方式：GitHub Actions 自动构建**（无需 Windows 本机环境）
+
+#### 方式一：GitHub Actions（推荐）
+
+工作流文件已配置在 `.github/workflows/build-windows.yml`，支持两种触发方式：
+
+**手动触发**
+
+1. 推送代码到 GitHub
+2. 进入仓库 → **Actions** → 左侧选 **Build Windows Installer** → **Run workflow**
+3. 等待约 10–15 分钟，在运行结果页面的 **Artifacts** 区域下载 `Lumio-Windows.zip`，解压得到 `Lumio-Setup.exe`
+
+**发布版本时自动触发**
+
+```bash
+git tag v1.0.0
+git push --tags
+```
+
+推送标签后自动构建，安装包会附到对应的 GitHub Release 页面。
+
+#### 方式二：在 Windows 本机构建
+
 ```bat
 scripts\build-win.bat
 ```
