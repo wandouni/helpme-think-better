@@ -21,11 +21,9 @@
       --text-muted: #8B8577;
       --border: #EAE7DF;
       --radius: 14px;
-      --radius-sm: 8px;
     }
 
     html { scroll-behavior: smooth; }
-
     body {
       font-family: 'Inter', system-ui, sans-serif;
       background: var(--bg);
@@ -36,288 +34,119 @@
 
     /* ── Nav ── */
     nav {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: rgba(249, 248, 245, 0.85);
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(249,248,245,0.88);
       backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
       padding: 0 24px;
     }
     .nav-inner {
-      max-width: 1100px;
-      margin: 0 auto;
-      height: 60px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      max-width: 1100px; margin: 0 auto;
+      height: 60px; display: flex; align-items: center; justify-content: space-between;
     }
     .nav-logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      text-decoration: none;
-      color: var(--text);
-      font-weight: 700;
-      font-size: 20px;
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none; color: var(--text); font-weight: 700; font-size: 20px;
     }
     .nav-logo-icon {
-      width: 32px;
-      height: 32px;
-      background: var(--orange);
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      width: 32px; height: 32px; background: var(--orange);
+      border-radius: 8px; display: flex; align-items: center; justify-content: center;
     }
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+    .nav-links { display: flex; align-items: center; gap: 8px; }
     .nav-link {
-      text-decoration: none;
-      color: var(--text-muted);
-      font-size: 14px;
-      font-weight: 500;
-      padding: 6px 14px;
-      border-radius: 8px;
-      transition: all 0.15s;
+      text-decoration: none; color: var(--text-muted);
+      font-size: 14px; font-weight: 500; padding: 6px 14px;
+      border-radius: 8px; transition: all 0.15s;
     }
     .nav-link:hover { background: var(--border); color: var(--text); }
-    .nav-link.primary {
-      background: var(--text);
-      color: #fff;
-    }
+    .nav-link.primary { background: var(--text); color: #fff; }
     .nav-link.primary:hover { background: #1a1812; }
 
     /* ── Hero ── */
     .hero {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 96px 24px 72px;
-      text-align: center;
+      max-width: 1100px; margin: 0 auto;
+      padding: 96px 24px 64px; text-align: center;
     }
     .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: var(--orange-light);
-      color: var(--orange);
-      font-size: 13px;
-      font-weight: 600;
-      padding: 5px 14px;
-      border-radius: 100px;
-      margin-bottom: 28px;
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--orange-light); color: var(--orange);
+      font-size: 13px; font-weight: 600;
+      padding: 5px 14px; border-radius: 100px; margin-bottom: 28px;
     }
     .hero h1 {
-      font-size: clamp(40px, 6vw, 68px);
-      font-weight: 700;
-      line-height: 1.12;
-      letter-spacing: -0.03em;
-      color: var(--text);
-      margin-bottom: 20px;
+      font-size: clamp(40px, 6vw, 68px); font-weight: 700;
+      line-height: 1.12; letter-spacing: -0.03em;
+      color: var(--text); margin-bottom: 20px;
     }
     .hero h1 span { color: var(--orange); }
     .hero-sub {
-      font-size: clamp(16px, 2vw, 20px);
-      color: var(--text-muted);
-      max-width: 560px;
-      margin: 0 auto 40px;
+      font-size: clamp(16px, 2vw, 20px); color: var(--text-muted);
+      max-width: 560px; margin: 0 auto 40px;
     }
-    .hero-actions {
-      display: flex;
-      gap: 12px;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
+    .hero-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
     .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 15px;
-      font-weight: 600;
-      padding: 12px 24px;
-      border-radius: 10px;
-      text-decoration: none;
-      transition: all 0.15s;
-      cursor: pointer;
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 15px; font-weight: 600; padding: 12px 24px;
+      border-radius: 10px; text-decoration: none; transition: all 0.15s; cursor: pointer;
     }
-    .btn-primary {
-      background: var(--orange);
-      color: #fff;
-    }
+    .btn-primary { background: var(--orange); color: #fff; }
     .btn-primary:hover { background: var(--orange-hover); transform: translateY(-1px); }
-    .btn-secondary {
-      background: var(--surface);
-      color: var(--text);
-      border: 1.5px solid var(--border);
-    }
+    .btn-secondary { background: var(--surface); color: var(--text); border: 1.5px solid var(--border); }
     .btn-secondary:hover { border-color: #ccc; transform: translateY(-1px); }
 
-    /* ── App mockup ── */
-    .mockup-wrap {
-      max-width: 1000px;
-      margin: 64px auto 0;
-      padding: 0 24px;
+    /* ── Screenshot showcase ── */
+    .screenshot-wrap {
+      max-width: 1020px; margin: 56px auto 0; padding: 0 24px;
     }
-    .mockup {
-      background: var(--surface);
-      border: 1.5px solid var(--border);
-      border-radius: 16px;
-      box-shadow: 0 24px 80px rgba(61,57,41,0.10), 0 4px 16px rgba(61,57,41,0.06);
-      overflow: hidden;
+    .screenshot-tabs {
+      display: flex; gap: 6px; justify-content: center;
+      margin-bottom: 20px; flex-wrap: wrap;
     }
-    .mockup-titlebar {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 12px 16px;
-      background: #F4F2EE;
-      border-bottom: 1px solid var(--border);
+    .ss-tab {
+      font-size: 13px; font-weight: 500;
+      padding: 7px 18px; border-radius: 100px; border: 1.5px solid var(--border);
+      background: var(--surface); color: var(--text-muted);
+      cursor: pointer; transition: all 0.15s;
     }
-    .dot { width: 12px; height: 12px; border-radius: 50%; }
-    .dot-r { background: #FF5F57; }
-    .dot-y { background: #FEBC2E; }
-    .dot-g { background: #28C840; }
-    .mockup-toolbar {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 10px 16px;
-      border-bottom: 1px solid var(--border);
-      background: var(--surface);
-    }
-    .mock-icon { width: 28px; height: 28px; background: var(--orange-light); border-radius: 6px; display: flex; align-items: center; justify-content: center; }
-    .mock-tabs { display: flex; gap: 4px; margin-left: auto; }
-    .mock-tab {
-      font-size: 12px;
-      font-weight: 500;
-      padding: 4px 12px;
-      border-radius: 100px;
-      color: var(--text-muted);
-    }
-    .mock-tab.active { background: var(--orange); color: #fff; }
-    .mockup-body {
-      display: grid;
-      grid-template-columns: 220px 1fr 280px;
-      height: 380px;
-    }
-    .mock-sidebar {
-      border-right: 1px solid var(--border);
-      padding: 14px 12px;
-      background: #FDFCF9;
-    }
-    .mock-file {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 10px;
-      border-radius: 8px;
-      font-size: 12px;
-      color: var(--text-muted);
-      margin-bottom: 4px;
-    }
-    .mock-file.active { background: var(--orange-light); color: var(--orange); font-weight: 600; }
-    .mock-file-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
-    .mock-mindmap {
-      padding: 20px;
+    .ss-tab:hover { border-color: var(--orange); color: var(--orange); }
+    .ss-tab.active { background: var(--orange); border-color: var(--orange); color: #fff; }
+    .screenshot-frame {
+      border-radius: 14px; overflow: hidden;
+      box-shadow: 0 2px 0 rgba(0,0,0,0.06),
+                  0 8px 24px rgba(61,57,41,0.08),
+                  0 32px 80px rgba(61,57,41,0.10);
+      border: 1px solid var(--border);
+      background: #1e1c18;
       position: relative;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
     }
-    /* SVG mindmap drawing */
-    .mm-svg { width: 100%; max-width: 380px; }
-    .mock-panel {
-      border-left: 1px solid var(--border);
-      padding: 16px;
-      background: #FDFCF9;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
+    .screenshot-frame img {
+      width: 100%; display: block;
+      transition: opacity 0.2s ease;
     }
-    .mock-progress-label { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; }
-    .mock-progress-bar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; margin-top: 6px; }
-    .mock-progress-fill { height: 100%; background: var(--orange); border-radius: 3px; width: 42%; }
-    .mock-stats { display: flex; gap: 8px; }
-    .mock-stat {
-      flex: 1;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 8px;
-      text-align: center;
-    }
-    .mock-stat-n { font-size: 18px; font-weight: 700; color: var(--orange); }
-    .mock-stat-l { font-size: 10px; color: var(--text-muted); }
-    .mock-chat-bubble {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 10px 12px;
-      font-size: 11px;
-      color: var(--text);
-      line-height: 1.5;
-    }
-    .mock-chat-bubble.ai { background: var(--orange-light); border-color: transparent; font-size: 11px; }
-    .mock-input-row {
-      display: flex;
-      gap: 6px;
-      margin-top: auto;
-    }
-    .mock-input {
-      flex: 1;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      height: 28px;
-    }
-    .mock-send {
-      width: 28px;
-      height: 28px;
-      background: var(--orange);
-      border-radius: 8px;
+    .screenshot-frame img.fading { opacity: 0; }
+    .ss-caption {
+      text-align: center; margin-top: 14px;
+      font-size: 13px; color: var(--text-muted);
     }
 
     /* ── Features ── */
-    .section {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 100px 24px;
-    }
+    .section { max-width: 1100px; margin: 0 auto; padding: 100px 24px; }
     .section-label {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--orange);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      margin-bottom: 12px;
+      font-size: 13px; font-weight: 600; color: var(--orange);
+      text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px;
     }
     .section-title {
-      font-size: clamp(28px, 4vw, 42px);
-      font-weight: 700;
-      line-height: 1.2;
-      letter-spacing: -0.02em;
-      margin-bottom: 16px;
+      font-size: clamp(28px, 4vw, 42px); font-weight: 700;
+      line-height: 1.2; letter-spacing: -0.02em; margin-bottom: 16px;
     }
-    .section-desc {
-      font-size: 17px;
-      color: var(--text-muted);
-      max-width: 520px;
-    }
+    .section-desc { font-size: 17px; color: var(--text-muted); max-width: 520px; }
     .features-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 20px;
-      margin-top: 56px;
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px; margin-top: 56px;
     }
     .feature-card {
-      background: var(--surface);
-      border: 1.5px solid var(--border);
-      border-radius: var(--radius);
-      padding: 28px;
+      background: var(--surface); border: 1.5px solid var(--border);
+      border-radius: var(--radius); padding: 28px;
       transition: border-color 0.2s, box-shadow 0.2s;
     }
     .feature-card:hover {
@@ -325,153 +154,90 @@
       box-shadow: 0 8px 32px rgba(217,119,87,0.10);
     }
     .feature-icon {
-      width: 44px;
-      height: 44px;
-      background: var(--orange-light);
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 18px;
-      font-size: 22px;
+      width: 44px; height: 44px; background: var(--orange-light);
+      border-radius: 12px; display: flex; align-items: center;
+      justify-content: center; margin-bottom: 18px; font-size: 22px;
     }
-    .feature-card h3 {
-      font-size: 17px;
-      font-weight: 650;
-      margin-bottom: 8px;
-    }
-    .feature-card p {
-      font-size: 14px;
-      color: var(--text-muted);
-      line-height: 1.6;
-    }
+    .feature-card h3 { font-size: 17px; font-weight: 650; margin-bottom: 8px; }
+    .feature-card p { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
 
     /* ── How it works ── */
     .how-section {
       background: var(--surface);
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
+      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
     }
     .steps {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-      gap: 40px;
-      margin-top: 56px;
-      position: relative;
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 40px; margin-top: 56px; position: relative;
     }
     .steps::before {
-      content: '';
-      position: absolute;
-      top: 28px;
-      left: calc(16.6% + 14px);
-      right: calc(16.6% + 14px);
+      content: ''; position: absolute; top: 28px;
+      left: calc(16.6% + 14px); right: calc(16.6% + 14px);
       height: 2px;
       background: linear-gradient(90deg, var(--orange), var(--orange-light));
       border-radius: 2px;
     }
     .step { text-align: center; }
     .step-num {
-      width: 56px;
-      height: 56px;
-      background: var(--orange);
-      color: #fff;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-      font-weight: 700;
-      margin: 0 auto 20px;
-      position: relative;
-      z-index: 1;
+      width: 56px; height: 56px; background: var(--orange); color: #fff;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: 22px; font-weight: 700; margin: 0 auto 20px; position: relative; z-index: 1;
     }
     .step h3 { font-size: 16px; font-weight: 650; margin-bottom: 8px; }
     .step p { font-size: 14px; color: var(--text-muted); }
 
     /* ── AI models ── */
-    .models-section {
-      background: var(--bg);
-    }
-    .models-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-top: 40px;
-    }
+    .models-section { background: var(--bg); }
+    .models-grid { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 40px; }
     .model-chip {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: var(--surface);
-      border: 1.5px solid var(--border);
-      border-radius: 100px;
-      padding: 8px 18px;
-      font-size: 14px;
-      font-weight: 500;
+      display: flex; align-items: center; gap: 8px;
+      background: var(--surface); border: 1.5px solid var(--border);
+      border-radius: 100px; padding: 8px 18px;
+      font-size: 14px; font-weight: 500;
     }
     .model-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--orange); }
 
     /* ── Download ── */
     .download-section {
       background: linear-gradient(135deg, #3D3929 0%, #2A2820 100%);
-      padding: 100px 24px;
-      text-align: center;
+      padding: 100px 24px; text-align: center;
     }
     .download-inner { max-width: 700px; margin: 0 auto; }
     .download-section .section-label { color: var(--orange); }
     .download-section .section-title { color: #fff; }
     .download-section .section-desc { color: rgba(255,255,255,0.6); margin: 0 auto 48px; }
     .download-cards {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      max-width: 560px;
-      margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 16px; max-width: 560px; margin: 0 auto;
     }
     .download-card {
-      background: rgba(255,255,255,0.06);
-      border: 1.5px solid rgba(255,255,255,0.12);
-      border-radius: var(--radius);
-      padding: 28px 24px;
-      text-align: left;
-      text-decoration: none;
-      color: #fff;
-      transition: all 0.2s;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
+      background: rgba(255,255,255,0.06); border: 1.5px solid rgba(255,255,255,0.12);
+      border-radius: var(--radius); padding: 28px 24px;
+      text-align: left; text-decoration: none; color: #fff;
+      transition: all 0.2s; display: flex; flex-direction: column; gap: 12px;
     }
     .download-card:hover {
-      background: rgba(255,255,255,0.10);
-      border-color: var(--orange);
+      background: rgba(255,255,255,0.10); border-color: var(--orange);
       transform: translateY(-2px);
     }
     .download-card-os { font-size: 13px; color: rgba(255,255,255,0.5); font-weight: 500; }
     .download-card-name { font-size: 18px; font-weight: 700; }
     .download-card-detail { font-size: 12px; color: rgba(255,255,255,0.4); }
-    .download-web {
-      margin-top: 24px;
-      font-size: 14px;
-      color: rgba(255,255,255,0.5);
-    }
+    .download-web { margin-top: 24px; font-size: 14px; color: rgba(255,255,255,0.5); }
     .download-web a { color: var(--orange); text-decoration: none; }
     .download-web a:hover { text-decoration: underline; }
 
     /* ── Footer ── */
-    footer {
-      padding: 40px 24px;
-      border-top: 1px solid var(--border);
-    }
+    footer { padding: 40px 24px; border-top: 1px solid var(--border); }
     .footer-inner {
-      max-width: 1100px;
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 16px;
+      max-width: 1100px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 16px;
     }
-    .footer-logo { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 16px; color: var(--text); text-decoration: none; }
+    .footer-logo {
+      display: flex; align-items: center; gap: 8px;
+      font-weight: 700; font-size: 16px; color: var(--text); text-decoration: none;
+    }
     .footer-links { display: flex; gap: 24px; }
     .footer-links a { font-size: 14px; color: var(--text-muted); text-decoration: none; }
     .footer-links a:hover { color: var(--text); }
@@ -479,13 +245,11 @@
 
     /* ── Responsive ── */
     @media (max-width: 768px) {
-      .mockup-body { grid-template-columns: 1fr; height: auto; }
-      .mock-sidebar, .mock-panel { display: none; }
-      .mock-mindmap { height: 260px; }
       .steps::before { display: none; }
       .download-cards { grid-template-columns: 1fr; }
       .nav-links .nav-link:not(.primary) { display: none; }
       .footer-inner { flex-direction: column; text-align: center; }
+      .ss-tab { font-size: 12px; padding: 6px 13px; }
     }
 
     /* ── Animations ── */
@@ -542,106 +306,17 @@
   </div>
 </section>
 
-<!-- ── App mockup ─────────────────────────────────────────── -->
-<div class="mockup-wrap">
-  <div class="mockup">
-    <div class="mockup-titlebar">
-      <div class="dot dot-r"></div>
-      <div class="dot dot-y"></div>
-      <div class="dot dot-g"></div>
-      <span style="margin-left:12px;font-size:13px;color:#999;">Lumio</span>
-    </div>
-    <div class="mockup-toolbar">
-      <div class="mock-icon">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-          <rect x="2" y="14" width="20" height="4" rx="2" fill="#D97757" opacity=".5"/>
-          <rect x="5" y="8" width="14" height="4" rx="2" fill="#D97757" opacity=".75"/>
-          <rect x="8" y="2" width="8" height="4" rx="2" fill="#D97757"/>
-        </svg>
-      </div>
-      <span style="font-size:13px;font-weight:600;color:#3D3929;">Lumio</span>
-      <div class="mock-tabs">
-        <div class="mock-tab active">思维导图</div>
-        <div class="mock-tab">Markdown</div>
-      </div>
-      <div style="margin-left:auto;display:flex;gap:6px;">
-        <div style="width:28px;height:28px;border-radius:6px;background:#F4F2EE;border:1px solid #EAE7DF;"></div>
-        <div style="width:28px;height:28px;border-radius:6px;background:#F4F2EE;border:1px solid #EAE7DF;"></div>
-      </div>
-    </div>
-    <div class="mockup-body">
-      <!-- sidebar -->
-      <div class="mock-sidebar">
-        <div style="font-size:11px;font-weight:600;color:#8B8577;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;">文件库</div>
-        <div class="mock-file active">
-          <div class="mock-file-dot"></div>
-          南方区域辅助服务市场.pdf
-        </div>
-        <div class="mock-file">
-          <div class="mock-file-dot"></div>
-          电力系统稳定性分析.docx
-        </div>
-        <div class="mock-file">
-          <div class="mock-file-dot"></div>
-          可再生能源并网规范.md
-        </div>
-        <div style="margin-top:16px;padding:8px 10px;border-radius:8px;border:1.5px dashed #EAE7DF;text-align:center;font-size:11px;color:#8B8577;cursor:pointer;">
-          + 上传文件
-        </div>
-      </div>
-      <!-- mindmap -->
-      <div class="mock-mindmap">
-        <svg class="mm-svg" viewBox="0 0 380 300" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- center root -->
-          <rect x="140" y="130" width="100" height="34" rx="8" fill="#D97757"/>
-          <text x="190" y="152" text-anchor="middle" fill="#fff" font-family="Inter,sans-serif" font-size="12" font-weight="600">辅助服务市场</text>
-          <!-- branch lines -->
-          <path d="M140 147 Q80 147 60 80" stroke="#EAE7DF" stroke-width="1.5" fill="none"/>
-          <path d="M140 147 Q80 147 60 147" stroke="#EAE7DF" stroke-width="1.5" fill="none"/>
-          <path d="M140 147 Q80 147 60 220" stroke="#EAE7DF" stroke-width="1.5" fill="none"/>
-          <path d="M240 147 Q300 147 320 80" stroke="#EAE7DF" stroke-width="1.5" fill="none"/>
-          <path d="M240 147 Q300 147 320 147" stroke="#EAE7DF" stroke-width="1.5" fill="none"/>
-          <path d="M240 147 Q300 147 320 220" stroke="#EAE7DF" stroke-width="1.5" fill="none"/>
-          <!-- left nodes -->
-          <rect x="2" y="64" width="72" height="28" rx="6" fill="#FDF0EA" stroke="#D97757" stroke-width="1.5"/>
-          <text x="38" y="82" text-anchor="middle" fill="#D97757" font-family="Inter,sans-serif" font-size="10" font-weight="600">市场规则</text>
-          <rect x="2" y="132" width="72" height="28" rx="6" fill="#fff" stroke="#EAE7DF" stroke-width="1"/>
-          <text x="38" y="150" text-anchor="middle" fill="#3D3929" font-family="Inter,sans-serif" font-size="10">参与主体</text>
-          <rect x="2" y="204" width="72" height="28" rx="6" fill="#fff" stroke="#EAE7DF" stroke-width="1"/>
-          <text x="38" y="222" text-anchor="middle" fill="#3D3929" font-family="Inter,sans-serif" font-size="10">报价机制</text>
-          <!-- right nodes -->
-          <rect x="306" y="64" width="72" height="28" rx="6" fill="#fff" stroke="#EAE7DF" stroke-width="1"/>
-          <text x="342" y="82" text-anchor="middle" fill="#3D3929" font-family="Inter,sans-serif" font-size="10">计量结算</text>
-          <rect x="306" y="132" width="72" height="28" rx="6" fill="#fff" stroke="#EAE7DF" stroke-width="1"/>
-          <text x="342" y="150" text-anchor="middle" fill="#3D3929" font-family="Inter,sans-serif" font-size="10">监管机制</text>
-          <rect x="306" y="204" width="72" height="28" rx="6" fill="#fff" stroke="#EAE7DF" stroke-width="1"/>
-          <text x="342" y="222" text-anchor="middle" fill="#3D3929" font-family="Inter,sans-serif" font-size="10">典型案例</text>
-          <!-- learned badge -->
-          <circle cx="74" cy="64" r="7" fill="#22C55E"/>
-          <text x="74" y="68" text-anchor="middle" fill="#fff" font-family="Inter,sans-serif" font-size="8" font-weight="700">✓</text>
-        </svg>
-      </div>
-      <!-- right panel -->
-      <div class="mock-panel">
-        <div>
-          <div class="mock-progress-label">学习进度</div>
-          <div class="mock-progress-bar"><div class="mock-progress-fill"></div></div>
-          <div style="font-size:11px;color:#8B8577;margin-top:4px;">3 / 7 节点已完成</div>
-        </div>
-        <div class="mock-stats">
-          <div class="mock-stat"><div class="mock-stat-n">3</div><div class="mock-stat-l">已学习</div></div>
-          <div class="mock-stat"><div class="mock-stat-n">2</div><div class="mock-stat-l">重点</div></div>
-        </div>
-        <div style="font-size:11px;font-weight:600;color:#8B8577;">AI 解释</div>
-        <div class="mock-chat-bubble">请解释「市场规则」节点</div>
-        <div class="mock-chat-bubble ai">辅助服务市场规则规定了调频、备用等服务的准入条件、申报方式及考核标准...</div>
-        <div class="mock-input-row">
-          <div class="mock-input"></div>
-          <div class="mock-send"></div>
-        </div>
-      </div>
-    </div>
+<!-- ── Screenshot showcase ───────────────────────────────── -->
+<div class="screenshot-wrap">
+  <div class="screenshot-tabs">
+    <button class="ss-tab active" data-idx="0">思维导图 · AI 解释</button>
+    <button class="ss-tab" data-idx="1">Markdown 视图 · 学习路径</button>
+    <button class="ss-tab" data-idx="2">AI 接口配置</button>
   </div>
+  <div class="screenshot-frame">
+    <img id="ss-img" src="assets/1.png" alt="Lumio 思维导图界面" />
+  </div>
+  <p class="ss-caption" id="ss-caption">AI 自动生成思维导图，点击节点获取深度解释</p>
 </div>
 
 <!-- ── Features ──────────────────────────────────────────── -->
@@ -664,7 +339,7 @@
     <div class="feature-card">
       <div class="feature-icon">📊</div>
       <h3>学习进度追踪</h3>
-      <p>标记节点为「已学习」或「重点」，进度条实时更新，清晰掌握自己的学习状态。</p>
+      <p>标记节点为「已学习」或「重点」，已学习节点自动划线标注，进度条实时更新。</p>
     </div>
     <div class="feature-card">
       <div class="feature-icon">🎯</div>
@@ -674,7 +349,7 @@
     <div class="feature-card">
       <div class="feature-icon">🔄</div>
       <h3>双视图切换</h3>
-      <p>思维导图与 Markdown 文本视图无缝切换，满足不同阅读和学习习惯。</p>
+      <p>思维导图与 Markdown 文本视图无缝切换，文本支持选中后直接获取 AI 解释。</p>
     </div>
     <div class="feature-card">
       <div class="feature-icon">📁</div>
@@ -693,7 +368,7 @@
       <div class="step">
         <div class="step-num">1</div>
         <h3>上传文档</h3>
-        <p>支持 PDF、Word、Markdown，20 MB 以内，拖拽即可上传。</p>
+        <p>支持 PDF、Word、Markdown，20 MB 以内，点击即可上传。</p>
       </div>
       <div class="step">
         <div class="step-num">2</div>
@@ -784,5 +459,31 @@
   </div>
 </footer>
 
+<script>
+  const imgs = ['assets/1.png', 'assets/2.png', 'assets/3.png']
+  const captions = [
+    'AI 自动生成思维导图，点击节点获取深度解释',
+    'Markdown 视图支持文字选中解释，右侧展示 AI 个性化学习路径',
+    '兼容所有 OpenAI 格式接口，配置本地保存，不上传服务器',
+  ]
+  const ssImg = document.getElementById('ss-img')
+  const ssCaption = document.getElementById('ss-caption')
+
+  document.querySelectorAll('.ss-tab').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const idx = parseInt(btn.dataset.idx)
+      document.querySelectorAll('.ss-tab').forEach((t) => t.classList.remove('active'))
+      btn.classList.add('active')
+
+      ssImg.classList.add('fading')
+      setTimeout(() => {
+        ssImg.src = imgs[idx]
+        ssImg.alt = captions[idx]
+        ssCaption.textContent = captions[idx]
+        ssImg.classList.remove('fading')
+      }, 180)
+    })
+  })
+</script>
 </body>
 </html>

@@ -4,12 +4,41 @@ import { Transformer } from 'markmap-lib'
 import { ZoomIn, ZoomOut, Maximize2, Download } from 'lucide-react'
 import { useAppStore } from '../store/useAppStore'
 
+const LEARNED_COLOR = '#B0A99A'
+const STRIKE_CLASS = 'mm-strike-line'
+
 const transformer = new Transformer()
 
 const BTN_H = 32
 const BTN_GAP = 10
 const HL_CLASS = 'mm-sel-rect'
 const ACCENT = 'rgba(37,99,235,{a})'
+
+function addStrikethrough(g: Element) {
+  g.querySelector(`.${STRIKE_CLASS}`)?.remove()
+  const fo = g.querySelector('foreignObject')
+  if (!fo) return
+  const x = parseFloat(fo.getAttribute('x') ?? '0')
+  const y = parseFloat(fo.getAttribute('y') ?? '0')
+  const w = parseFloat(fo.getAttribute('width') ?? '0')
+  const h = parseFloat(fo.getAttribute('height') ?? '0')
+  if (!w || !h) return
+
+  const line = document.createElementNS('http://www.w3.org/2000/svg', 'line')
+  line.classList.add(STRIKE_CLASS)
+  line.setAttribute('x1', String(x + 2))
+  line.setAttribute('y1', String(y + h / 2))
+  line.setAttribute('x2', String(x + w - 2))
+  line.setAttribute('y2', String(y + h / 2))
+  line.setAttribute('stroke', LEARNED_COLOR)
+  line.setAttribute('stroke-width', '1.5')
+  line.setAttribute('pointer-events', 'none')
+  g.insertBefore(line, fo)
+}
+
+function removeStrikethrough(g: Element) {
+  g.querySelector(`.${STRIKE_CLASS}`)?.remove()
+}
 
 // ── helpers ──────────────────────────────────────────────────────────────
 
@@ -88,6 +117,27 @@ export default function MindmapView({ markdown, fileId, filename }: Props) {
   const mmRef = useRef<Markmap | null>(null)
   const setSelectedContent = useAppStore((s) => s.setSelectedContent)
   const isGenerating = useAppStore((s) => s.isGenerating)
+  const learnedNodes = useAppStore((s) => s.learnedNodes)
+
+  // Always holds latest closure — safe to call from any effect without stale captures
+  const applyLearnedRef = useRef<() => void>(() => {})
+  applyLearnedRef.current = () => {
+    const svg = svgRef.current
+    if (!svg || !fileId) return
+    const learned = useAppStore.getState().learnedNodes[fileId]
+    svg.querySelectorAll<Element>('g.markmap-node').forEach((g) => {
+      const text = getNodeText(g)
+      const fo = g.querySelector('foreignObject')
+      const el = fo?.querySelector<HTMLElement>('div, span, p')
+      if (learned?.has(text)) {
+        addStrikethrough(g)
+        if (el) el.style.color = LEARNED_COLOR
+      } else {
+        removeStrikethrough(g)
+        if (el) el.style.color = ''
+      }
+    })
+  }
 
   // Recreate Markmap when active file changes
   useEffect(() => {
@@ -105,7 +155,7 @@ export default function MindmapView({ markdown, fileId, filename }: Props) {
       try {
         const { root } = transformer.transform(cur)
         mm.setData(root)
-        setTimeout(() => mm.fit(), 100)
+        setTimeout(() => { mm.fit(); applyLearnedRef.current() }, 300)
       } catch {}
     }
     return () => { mmRef.current = null }
@@ -117,9 +167,15 @@ export default function MindmapView({ markdown, fileId, filename }: Props) {
     try {
       const { root } = transformer.transform(markdown)
       mmRef.current.setData(root)
-      if (!isGenerating) setTimeout(() => mmRef.current?.fit(), 100)
+      if (!isGenerating) setTimeout(() => { mmRef.current?.fit(); applyLearnedRef.current() }, 300)
     } catch {}
   }, [markdown, isGenerating])
+
+  // Re-apply strikethrough when learned nodes change (user marks/unmarks a node)
+  useEffect(() => {
+    const timer = setTimeout(() => applyLearnedRef.current(), 50)
+    return () => clearTimeout(timer)
+  }, [learnedNodes])
 
   // Node click
   useEffect(() => {

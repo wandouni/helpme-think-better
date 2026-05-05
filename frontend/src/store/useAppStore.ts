@@ -99,29 +99,37 @@ const loadPersistedState = (): PersistedState => {
   return { files: [], mindmapMarkdown: {}, activeFileId: null, chatHistory: {}, learnedNodes: {}, importantNodes: {}, learningPathContent: {} }
 }
 
+const buildSavePayload = (state: AppState): PersistedState => ({
+  files: state.files.map(({ id, filename, uploadTime }) => ({ id, filename, uploadTime })),
+  mindmapMarkdown: state.mindmapMarkdown,
+  activeFileId: state.activeFileId,
+  chatHistory: state.chatHistory,
+  learningPathContent: state.learningPathContent,
+  learnedNodes: Object.fromEntries(
+    Object.entries(state.learnedNodes).map(([k, v]) => [k, Array.from(v)])
+  ),
+  importantNodes: Object.fromEntries(
+    Object.entries(state.importantNodes).map(([k, v]) => [k, Array.from(v)])
+  ),
+})
+
+const writeToStorage = (payload: PersistedState) => {
+  try {
+    localStorage.setItem('policy_mindmap_state', JSON.stringify(payload))
+  } catch {}
+}
+
 let saveTimer: ReturnType<typeof setTimeout>
 const saveToStorage = (state: AppState) => {
   clearTimeout(saveTimer)
-  saveTimer = setTimeout(() => {
-    try {
-      const toSave: PersistedState = {
-        files: state.files.map(({ id, filename, uploadTime }) => ({ id, filename, uploadTime })),
-        mindmapMarkdown: state.mindmapMarkdown,
-        activeFileId: state.activeFileId,
-        chatHistory: state.chatHistory,
-        learningPathContent: state.learningPathContent,
-        // Convert Sets → arrays for JSON serialization
-        learnedNodes: Object.fromEntries(
-          Object.entries(state.learnedNodes).map(([k, v]) => [k, Array.from(v)])
-        ),
-        importantNodes: Object.fromEntries(
-          Object.entries(state.importantNodes).map(([k, v]) => [k, Array.from(v)])
-        ),
-      }
-      localStorage.setItem('policy_mindmap_state', JSON.stringify(toSave))
-    } catch {}
-  }, 400)
+  saveTimer = setTimeout(() => writeToStorage(buildSavePayload(state)), 400)
 }
+
+// Flush on page unload so the 400ms debounce never drops the final AI message
+window.addEventListener('beforeunload', () => {
+  clearTimeout(saveTimer)
+  writeToStorage(buildSavePayload(useAppStore.getState()))
+})
 
 // ── Store ─────────────────────────────────────────────────────────────────
 
