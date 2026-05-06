@@ -1,12 +1,23 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import toast, { Toaster, ToastBar } from 'react-hot-toast'
 import TopToolbar from './components/TopToolbar'
 import SplitPane from './components/SplitPane'
 import LeftPanel from './components/LeftPanel'
 import RightPanel from './components/RightPanel'
 import FloatingActionButtons from './components/FloatingActionButtons'
+import MobileNav from './components/MobileNav'
 import { useAppStore } from './store/useAppStore'
 import './styles.css'
+
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768)
+  useEffect(() => {
+    const handler = () => setIsMobile(window.innerWidth < 768)
+    window.addEventListener('resize', handler)
+    return () => window.removeEventListener('resize', handler)
+  }, [])
+  return isMobile
+}
 
 function SelectionManager() {
   const setSelectedContent = useAppStore((s) => s.setSelectedContent)
@@ -48,11 +59,23 @@ function SelectionManager() {
 }
 
 export default function App() {
+  const isMobile = useIsMobile()
+  const [mobilePanel, setMobilePanel] = useState<'left' | 'right'>('left')
+
   return (
     <div className="app">
       <SelectionManager />
       <TopToolbar />
-      <SplitPane left={<LeftPanel />} right={<RightPanel />} />
+      {isMobile ? (
+        <>
+          <div className="mobile-panel-wrap">
+            {mobilePanel === 'left' ? <LeftPanel /> : <RightPanel />}
+          </div>
+          <MobileNav active={mobilePanel} onChange={setMobilePanel} />
+        </>
+      ) : (
+        <SplitPane left={<LeftPanel />} right={<RightPanel />} />
+      )}
       <FloatingActionButtons />
       <Toaster
         position="top-center"

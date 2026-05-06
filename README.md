@@ -70,6 +70,37 @@ npm run dev
 
 ---
 
+## iPhone 安装（PWA）
+
+无需 App Store，通过局域网将 Lumio 安装到 iPhone 主屏幕，使用体验接近原生 App。
+
+### 前提
+
+- iPhone 和 Mac 连接**同一个 WiFi**
+- Mac 已安装 Python 3.11+ 和 Node.js 18+
+
+### 一键启动
+
+```bash
+./start-mobile.sh
+```
+
+脚本自动构建前端、启动后端（监听局域网），并打印 iPhone 访问地址。
+
+### 安装步骤
+
+1. 运行脚本后，终端会显示：
+   ```
+   在 iPhone Safari 中打开：http://192.168.x.x:8000
+   ```
+2. 在 **iPhone Safari** 中打开该地址
+3. 点击底部 **分享按钮（□↑）** → **「添加到主屏幕」**
+4. 确认后，Lumio 图标出现在主屏幕，点击即可全屏启动
+
+> **注意**：每次使用前需确保 Mac 上 `./start-mobile.sh` 正在运行（后端需在线）。
+
+---
+
 ## 桌面版（Mac / Windows）
 
 ### 开发模式启动

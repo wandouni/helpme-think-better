@@ -596,3 +596,69 @@ input  { font-family: inherit; }
 ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
 
 .spin-icon { animation: spin 0.65s linear infinite; }
+
+/* ════════════════════════════════════
+   Mobile — ≤ 767px
+   Single-panel layout + bottom tab bar
+════════════════════════════════════ */
+@media (max-width: 767px) {
+  /* Toolbar: tighter, safe-area aware */
+  .toolbar { padding-left: max(10px, env(safe-area-inset-left)); padding-right: max(10px, env(safe-area-inset-right)); }
+  .toolbar-brand { display: none; }
+  .toolbar-btn span { display: none; }
+  .toolbar-btn { padding: 0 9px; gap: 0; }
+  .toolbar-btn.primary { padding: 0 11px; }
+  .toolbar-divider { display: none; }
+
+  /* Full-height panel area above the bottom nav */
+  .mobile-panel-wrap {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .mobile-panel-wrap .panel { border-radius: 0; border-left: none; border-right: none; }
+
+  /* Bottom nav bar */
+  .mobile-nav {
+    display: flex;
+    flex-shrink: 0;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .mobile-nav-tab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    padding: 10px 0;
+    border: none;
+    background: none;
+    color: var(--text-muted);
+    font-size: 10px;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    transition: color var(--dur-fast);
+    min-height: 56px;
+  }
+  .mobile-nav-tab.active { color: var(--orange); }
+  .mobile-nav-tab.active svg { stroke: var(--orange); }
+
+  /* Modal & dropdown: full-width on mobile */
+  .modal { width: calc(100vw - 24px); max-width: 100%; margin: 12px; }
+  .dropdown { width: calc(100vw - 24px); left: 0; right: 0; margin: 0 12px; }
+
+  /* Chat bubbles: slightly wider */
+  .chat-bubble { max-width: 92%; }
+
+  /* Learning panel popup: full screen on mobile */
+  .lp-popup { width: calc(100vw - 24px); max-height: 70vh; }
+
+  /* File badge in panel: truncate more aggressively */
+  .panel-file-badge { max-width: 120px; }
+}

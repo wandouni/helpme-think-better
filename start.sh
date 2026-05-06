@@ -15,7 +15,7 @@ source .venv/bin/activate
 pip install -q -r requirements.txt
 echo "✅ 后端依赖安装完成"
 
-uvicorn app.main:app --reload --port 8000 &
+uvicorn app.main:app --host 0.0.0.0 --reload --port 8000 &
 BACKEND_PID=$!
 echo "🚀 后端运行在 http://localhost:8000"
 
