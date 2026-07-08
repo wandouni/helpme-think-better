@@ -1,19 +1,16 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
-  <!-- Warm background -->
-  <rect width="1024" height="1024" rx="224" fill="#F9F8F5"/>
-
-  <!-- Subtle inner shadow ring -->
-  <rect width="1024" height="1024" rx="224" fill="none"
-        stroke="#E6E2D9" stroke-width="2" opacity="0.8"/>
-
-  <!-- Layers icon — centered, Claude orange -->
-  <g transform="translate(512,512)" stroke="#D97757" stroke-width="62"
-     stroke-linecap="round" stroke-linejoin="round" fill="none">
-    <!-- top layer -->
-    <path d="M0,-210 L-280,-70 L0,70 L280,-70 Z"/>
-    <!-- middle layer line -->
-    <polyline points="-280,70 0,210 280,70"/>
-    <!-- bottom layer line -->
-    <polyline points="-280,0 0,140 280,0"/>
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <rect width="1024" height="1024" rx="225" fill="#171A2F"/>
+  <path d="M0 0H645L451 451L0 553Z" fill="#00C2A8"/>
+  <path d="M645 0H1024V594L451 451Z" fill="#315CFF"/>
+  <path d="M0 553L451 451L358 1024H0Z" fill="#FFD23F"/>
+  <path d="M451 451L1024 594V1024H358Z" fill="#FF5A5F"/>
+  <path d="M287 184L604 133L522 461L205 481Z" fill="#7C3AED"/>
+  <path d="M645 553L932 451V799L696 850Z" fill="#FF8A00"/>
+  <path d="M297 676L481 502L676 604L788 348" fill="none" stroke="#fff" stroke-width="88" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="297" cy="676" r="88" fill="#fff"/><circle cx="297" cy="676" r="48" fill="#FFD23F"/>
+  <circle cx="481" cy="502" r="88" fill="#fff"/><circle cx="481" cy="502" r="48" fill="#171A2F"/>
+  <circle cx="676" cy="604" r="88" fill="#fff"/><circle cx="676" cy="604" r="48" fill="#00C2A8"/>
+  <circle cx="788" cy="348" r="88" fill="#fff"/><circle cx="788" cy="348" r="48" fill="#FF5A5F"/>
+  <rect x="266" y="276" width="133" height="72" rx="36" fill="#fff"/>
+  <rect x="236" y="358" width="102" height="72" rx="36" fill="#fff"/>
 </svg>
