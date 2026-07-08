@@ -5,7 +5,7 @@ import { buildPrompt } from '../utils/promptBuilder'
 import { streamExplain } from '../services/api'
 
 export function useExplain() {
-  const config = useAppStore((s) => s.deepseekConfig)
+  const config = useAppStore((s) => s.aiConfig)
   const activeFileId = useAppStore((s) => s.activeFileId)
   const selectedContent = useAppStore((s) => s.selectedContent)
   const isExplaining = useAppStore((s) => s.isExplaining)
@@ -16,7 +16,7 @@ export function useExplain() {
   const setSelectedContent = useAppStore((s) => s.setSelectedContent)
 
   const explain = useCallback(async () => {
-    if (!config.apiKey) { toast.error('请先配置 DeepSeek API'); return }
+    if (!config.apiKey) { toast.error('请先配置 AI 接口'); return }
     if (!selectedContent) { toast('请先选中思维导图节点或文本内容'); return }
     if (!activeFileId) { toast('请先选择文件'); return }
     if (isExplaining) return

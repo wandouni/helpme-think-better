@@ -15,7 +15,7 @@ export interface ChatMessage {
   isError?: boolean
 }
 
-export interface DeepSeekConfig {
+export interface AIConfig {
   apiKey: string
   apiBaseUrl: string
   model: string
@@ -29,7 +29,7 @@ export interface SelectionPos {
 interface AppState {
   files: FileItem[]
   activeFileId: string | null
-  deepseekConfig: DeepSeekConfig
+  aiConfig: AIConfig
   mindmapMarkdown: Record<string, string>
   leftViewMode: 'mindmap' | 'markdown'
   selectedContent: string | null
@@ -50,7 +50,7 @@ interface AppState {
   addFile: (file: FileItem) => void
   removeFile: (id: string) => void
   setActiveFile: (id: string | null) => void
-  setDeepSeekConfig: (config: Partial<DeepSeekConfig>) => void
+  setAIConfig: (config: Partial<AIConfig>) => void
   setMindmapMarkdown: (fileId: string, markdown: string) => void
   appendMindmapMarkdown: (fileId: string, chunk: string) => void
   setLeftViewMode: (mode: 'mindmap' | 'markdown') => void
@@ -73,9 +73,23 @@ interface AppState {
 
 // ── Persistence ───────────────────────────────────────────────────────────
 
-const loadConfig = (): DeepSeekConfig => {
+const CONFIG_KEY = 'ai_config'
+const STATE_KEY = 'lumio_state'
+
+const migrateKey = (oldKey: string, newKey: string) => {
   try {
-    const raw = localStorage.getItem('deepseek_config')
+    const raw = localStorage.getItem(oldKey)
+    if (raw) {
+      localStorage.setItem(newKey, raw)
+      localStorage.removeItem(oldKey)
+    }
+  } catch {}
+}
+
+const loadConfig = (): AIConfig => {
+  migrateKey('deepseek_config', CONFIG_KEY)
+  try {
+    const raw = localStorage.getItem(CONFIG_KEY)
     if (raw) return JSON.parse(raw)
   } catch {}
   return { apiKey: '', apiBaseUrl: 'https://api.deepseek.com', model: 'deepseek-chat' }
@@ -92,8 +106,9 @@ interface PersistedState {
 }
 
 const loadPersistedState = (): PersistedState => {
+  migrateKey('policy_mindmap_state', STATE_KEY)
   try {
-    const raw = localStorage.getItem('policy_mindmap_state')
+    const raw = localStorage.getItem(STATE_KEY)
     if (raw) return JSON.parse(raw)
   } catch {}
   return { files: [], mindmapMarkdown: {}, activeFileId: null, chatHistory: {}, learnedNodes: {}, importantNodes: {}, learningPathContent: {} }
@@ -115,7 +130,7 @@ const buildSavePayload = (state: AppState): PersistedState => ({
 
 const writeToStorage = (payload: PersistedState) => {
   try {
-    localStorage.setItem('policy_mindmap_state', JSON.stringify(payload))
+    localStorage.setItem(STATE_KEY, JSON.stringify(payload))
   } catch {}
 }
 
@@ -143,7 +158,7 @@ export const useAppStore = create<AppState>((set) => ({
   files: persisted.files.map((f) => ({ ...f, textContent: '' })),
   activeFileId: persisted.activeFileId,
   mindmapMarkdown: persisted.mindmapMarkdown,
-  deepseekConfig: loadConfig(),
+  aiConfig: loadConfig(),
   leftViewMode: 'mindmap',
   selectedContent: null,
   selectionSource: null,
@@ -176,11 +191,11 @@ export const useAppStore = create<AppState>((set) => ({
   setActiveFile: (id) =>
     set({ activeFileId: id, selectedContent: null, selectionSource: null, selectionPos: null }),
 
-  setDeepSeekConfig: (config) =>
+  setAIConfig: (config) =>
     set((s) => {
-      const next = { ...s.deepseekConfig, ...config }
-      localStorage.setItem('deepseek_config', JSON.stringify(next))
-      return { deepseekConfig: next }
+      const next = { ...s.aiConfig, ...config }
+      localStorage.setItem(CONFIG_KEY, JSON.stringify(next))
+      return { aiConfig: next }
     }),
 
   setMindmapMarkdown: (fileId, markdown) =>

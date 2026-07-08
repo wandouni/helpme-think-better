@@ -3,7 +3,7 @@ from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 
 from app.config import get_prompts_dir
-from app.services.deepseek import stream_deepseek
+from app.services.ai import stream_ai
 
 router = APIRouter()
 
@@ -25,7 +25,7 @@ async def generate_mindmap(req: MindmapRequest):
 
     async def event_generator():
         try:
-            async for chunk in stream_deepseek(
+            async for chunk in stream_ai(
                 prompt=prompt,
                 system_prompt=SYSTEM_PROMPT,
                 api_key=req.api_key,

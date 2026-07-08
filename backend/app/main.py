@@ -11,7 +11,7 @@ from app.routers import upload, mindmap, explain
 
 limiter = Limiter(key_func=get_remote_address)
 
-app = FastAPI(title="电力政策文件思维导图工具", version="1.0.0")
+app = FastAPI(title="Lumio - 文档学习与思维导图工具", version="1.0.0")
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 

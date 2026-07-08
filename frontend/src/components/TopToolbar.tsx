@@ -12,7 +12,7 @@ export default function TopToolbar() {
   const fileInput = useRef<HTMLInputElement>(null)
   const [showSettings, setShowSettings] = useState(false)
 
-  const config = useAppStore((s) => s.deepseekConfig)
+  const config = useAppStore((s) => s.aiConfig)
   const isGenerating = useAppStore((s) => s.isGenerating)
 
   const addFile = useAppStore((s) => s.addFile)

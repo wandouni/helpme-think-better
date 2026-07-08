@@ -13,7 +13,7 @@ interface Props {
 }
 
 export default function ChatMessage({ msg, fileId }: Props) {
-  const config = useAppStore((s) => s.deepseekConfig)
+  const config = useAppStore((s) => s.aiConfig)
   const appendChatMessage = useAppStore((s) => s.appendChatMessage)
   const setChatMessageError = useAppStore((s) => s.setChatMessageError)
   const setIsExplaining = useAppStore((s) => s.setIsExplaining)

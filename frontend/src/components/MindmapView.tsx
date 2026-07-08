@@ -257,7 +257,7 @@ export default function MindmapView({ markdown, fileId, filename }: Props) {
               <line x1="8.5" x2="15.5" y1="13.5" y2="17.5"/><line x1="15.5" x2="8.5" y1="6.5" y2="10.5"/>
             </svg>
           </div>
-          <p>上传政策文件后，思维导图将在此处展示</p>
+          <p>上传文件后，思维导图将在此处展示</p>
         </div>
       )}
       <svg ref={svgRef} style={{ width: '100%', height: '100%' }} />

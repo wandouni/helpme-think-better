@@ -13,7 +13,7 @@ export default function RightPanel() {
   const setRightPanelTab = useAppStore((s) => s.setRightPanelTab)
   const learnedNodes = useAppStore((s) => s.learnedNodes)
   const importantNodes = useAppStore((s) => s.importantNodes)
-  const config = useAppStore((s) => s.deepseekConfig)
+  const config = useAppStore((s) => s.aiConfig)
   const isExplaining = useAppStore((s) => s.isExplaining)
   const setIsExplaining = useAppStore((s) => s.setIsExplaining)
   const addChatMessage = useAppStore((s) => s.addChatMessage)

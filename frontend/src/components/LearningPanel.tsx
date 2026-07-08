@@ -70,7 +70,7 @@ export default function LearningPanel() {
   const importantNodes = useAppStore((s) => s.importantNodes)
   const learningPathContent = useAppStore((s) => s.learningPathContent)
   const isLoadingLearningPath = useAppStore((s) => s.isLoadingLearningPath)
-  const config = useAppStore((s) => s.deepseekConfig)
+  const config = useAppStore((s) => s.aiConfig)
   const setLearningPathContent = useAppStore((s) => s.setLearningPathContent)
   const appendLearningPathContent = useAppStore((s) => s.appendLearningPathContent)
   const setIsLoadingLearningPath = useAppStore((s) => s.setIsLoadingLearningPath)

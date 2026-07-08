@@ -85,9 +85,19 @@ async function startBackend(port) {
     try { fs.chmodSync(exe, 0o755) } catch (_) {}
   }
 
+  const env = { ...process.env }
+  // Ensure the PyInstaller-frozen backend can find the CA bundle
+  if (app.isPackaged) {
+    const caBundle = path.join(process.resourcesPath, 'server', '_internal', 'certifi', 'cacert.pem')
+    if (fs.existsSync(caBundle)) {
+      env.SSL_CERT_FILE = caBundle
+    }
+  }
+
   backendProcess = spawn(exe, ['--port', String(port)], {
     stdio: 'ignore',
     detached: false,
+    env,
   })
   backendProcess.on('error', (err) => console.error('[backend]', err))
 

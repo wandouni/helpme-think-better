@@ -3,7 +3,7 @@ from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 
 from app.config import get_prompts_dir
-from app.services.deepseek import stream_deepseek, test_connection
+from app.services.ai import stream_ai, test_connection
 
 router = APIRouter()
 
@@ -27,7 +27,7 @@ class TestConnectionRequest(BaseModel):
 async def explain(req: ExplainRequest):
     async def event_generator():
         try:
-            async for chunk in stream_deepseek(
+            async for chunk in stream_ai(
                 prompt=req.prompt,
                 system_prompt=SYSTEM_PROMPT,
                 api_key=req.api_key,

@@ -1,4 +1,4 @@
-import { DeepSeekConfig } from '../store/useAppStore'
+import { AIConfig } from '../store/useAppStore'
 
 export async function uploadFile(file: File) {
   const form = new FormData()
@@ -18,7 +18,7 @@ export async function uploadFile(file: File) {
 
 export async function streamMindmap(
   textContent: string,
-  config: DeepSeekConfig,
+  config: AIConfig,
   onChunk: (chunk: string) => void,
   onDone: () => void,
   onError: (err: string) => void,
@@ -43,7 +43,7 @@ export async function streamMindmap(
 
 export async function streamExplain(
   prompt: string,
-  config: DeepSeekConfig,
+  config: AIConfig,
   onChunk: (chunk: string) => void,
   onDone: () => void,
   onError: (err: string) => void,
@@ -66,7 +66,7 @@ export async function streamExplain(
   readSSE(res.body, onChunk, onDone, onError)
 }
 
-export async function testConnection(config: DeepSeekConfig) {
+export async function testConnection(config: AIConfig) {
   const res = await fetch('/api/test-connection', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

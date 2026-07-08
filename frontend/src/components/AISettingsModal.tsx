@@ -8,8 +8,8 @@ interface Props {
 }
 
 export default function AISettingsModal({ onClose }: Props) {
-  const config = useAppStore((s) => s.deepseekConfig)
-  const setDeepSeekConfig = useAppStore((s) => s.setDeepSeekConfig)
+  const config = useAppStore((s) => s.aiConfig)
+  const setAIConfig = useAppStore((s) => s.setAIConfig)
 
   const [apiKey, setApiKey] = useState(config.apiKey)
   const [apiBaseUrl, setApiBaseUrl] = useState(config.apiBaseUrl)
@@ -19,7 +19,7 @@ export default function AISettingsModal({ onClose }: Props) {
   const [testError, setTestError] = useState('')
 
   const handleSave = () => {
-    setDeepSeekConfig({ apiKey, apiBaseUrl, model })
+    setAIConfig({ apiKey, apiBaseUrl, model })
     onClose()
   }
 
