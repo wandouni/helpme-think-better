@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { Upload, Settings, Lightbulb, Loader2 } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { useAppStore } from '../store/useAppStore'
+import type { ImportMode } from '../store/useAppStore'
 import { uploadFile, streamMindmap } from '../services/api'
 import { useExplain } from '../hooks/useExplain'
 import { isElectronMac, isElectronWin } from '../utils/platform'
@@ -11,6 +12,7 @@ import FileListDropdown from './FileListDropdown'
 export default function TopToolbar() {
   const fileInput = useRef<HTMLInputElement>(null)
   const [showSettings, setShowSettings] = useState(false)
+  const [importMode, setImportMode] = useState<ImportMode>('mindmap')
 
   const config = useAppStore((s) => s.aiConfig)
   const isGenerating = useAppStore((s) => s.isGenerating)
@@ -18,6 +20,7 @@ export default function TopToolbar() {
   const addFile = useAppStore((s) => s.addFile)
   const setMindmapMarkdown = useAppStore((s) => s.setMindmapMarkdown)
   const appendMindmapMarkdown = useAppStore((s) => s.appendMindmapMarkdown)
+  const setLeftViewMode = useAppStore((s) => s.setLeftViewMode)
   const setIsGenerating = useAppStore((s) => s.setIsGenerating)
 
   const { explain, canExplain, isExplaining } = useExplain()
@@ -27,13 +30,13 @@ export default function TopToolbar() {
     if (!file) return
     e.target.value = ''
 
-    if (!config.apiKey) {
+    if (importMode === 'mindmap' && !config.apiKey) {
       toast.error('请先配置 AI 接口 Key')
       return
     }
 
     setIsGenerating(true)
-    const toastId = toast.loading('正在上传文件…')
+    const toastId = toast.loading(importMode === 'raw' ? '正在提取原文…' : '正在上传文件…')
 
     try {
       const result = await uploadFile(file)
@@ -42,7 +45,16 @@ export default function TopToolbar() {
         filename: result.filename,
         uploadTime: new Date().toLocaleString('zh-CN'),
         textContent: result.text_content,
+        importMode,
       })
+
+      if (importMode === 'raw') {
+        setMindmapMarkdown(result.file_id, result.text_content)
+        setLeftViewMode('markdown')
+        toast.success('原文提取完成', { id: toastId })
+        return
+      }
+
       setMindmapMarkdown(result.file_id, '')
       toast.loading('正在提炼核心内容…', { id: toastId })
 
@@ -85,7 +97,7 @@ export default function TopToolbar() {
         >
           {isGenerating
             ? <><div className="btn-spinner" /><span>生成中…</span></>
-            : <><Upload size={12} /><span>上传文件</span></>
+            : <><Upload size={12} /><span>导入文件</span></>
           }
         </button>
         <input
@@ -95,6 +107,19 @@ export default function TopToolbar() {
           style={{ display: 'none' }}
           onChange={handleFileChange}
         />
+
+        <label className="toolbar-select-wrap" title="选择导入后的处理方式">
+          <span>模式</span>
+          <select
+            className="toolbar-select"
+            value={importMode}
+            onChange={(e) => setImportMode(e.target.value as ImportMode)}
+            disabled={isGenerating}
+          >
+            <option value="mindmap">AI 提炼导图</option>
+            <option value="raw">原文提取</option>
+          </select>
+        </label>
 
         <div className="toolbar-divider" />
 

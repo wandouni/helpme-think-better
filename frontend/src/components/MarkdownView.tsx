@@ -8,9 +8,10 @@ const BTN_GAP = 10 // gap between selection and button
 
 interface Props {
   markdown: string
+  renderMode?: 'markdown' | 'text'
 }
 
-export default function MarkdownView({ markdown }: Props) {
+export default function MarkdownView({ markdown, renderMode = 'markdown' }: Props) {
   const setSelectedContent = useAppStore((s) => s.setSelectedContent)
   const containerRef = useRef<HTMLDivElement>(null)
 
@@ -48,14 +49,18 @@ export default function MarkdownView({ markdown }: Props) {
             <polyline points="10 9 9 9 8 9"/>
           </svg>
         </div>
-        <p>上传文件后，此处将展示思维导图的 Markdown 文本</p>
+        <p>上传文件后，此处将展示导入内容</p>
       </div>
     )
   }
 
   return (
     <div ref={containerRef} className="md-view">
-      <ReactMarkdown remarkPlugins={[remarkGfm]}>{markdown}</ReactMarkdown>
+      {renderMode === 'text' ? (
+        <pre className="md-plain-text">{markdown}</pre>
+      ) : (
+        <ReactMarkdown remarkPlugins={[remarkGfm]}>{markdown}</ReactMarkdown>
+      )}
     </div>
   )
 }

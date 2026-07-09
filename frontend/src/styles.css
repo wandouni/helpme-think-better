@@ -192,6 +192,34 @@ input  { font-family: inherit; }
 .chevron { transition: transform var(--dur-fast) var(--ease-out); }
 .chevron.open { transform: rotate(180deg); }
 
+.toolbar-select-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 26px;
+  padding: 0 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-full);
+  color: var(--text-muted);
+  font-size: 10px;
+  background: var(--surface);
+}
+.toolbar-select {
+  height: 20px;
+  border: 0;
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 500;
+  outline: none;
+  cursor: pointer;
+}
+.toolbar-select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .btn-spinner {
   width: 10px; height: 10px;
   border: 1.5px solid rgba(255,255,255,0.35);
@@ -240,6 +268,7 @@ input  { font-family: inherit; }
 .dropdown-item-body { flex: 1; min-width: 0; cursor: pointer; }
 .di-name { font-size: 11px; font-weight: 500; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
 .di-time { display: flex; align-items: center; gap: 3px; font-size: 10px; color: var(--text-muted); margin-top: 1px; }
+.di-mode { margin-left: 3px; padding: 0 5px; border: 1px solid var(--border); border-radius: var(--r-full); color: var(--text-secondary); background: var(--surface); }
 .di-delete { width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; border: none; background: none; color: var(--text-muted); border-radius: var(--r-sm); transition: background var(--dur-fast), color var(--dur-fast); flex-shrink: 0; }
 .di-delete:hover { background: var(--danger-subtle); color: var(--danger); }
 .confirm-row { display: flex; align-items: center; gap: 4px; font-size: 11px; color: var(--text-secondary); white-space: nowrap; }
@@ -303,6 +332,8 @@ input  { font-family: inherit; }
   white-space: nowrap;
 }
 .tab-btn:hover { background: var(--surface-3); color: var(--text-secondary); }
+.tab-btn:disabled { opacity: 0.42; cursor: not-allowed; }
+.tab-btn:disabled:hover { background: none; color: var(--text-muted); }
 .tab-btn.active {
   background: var(--surface);
   color: var(--text-primary);
@@ -357,6 +388,18 @@ input  { font-family: inherit; }
 .md-view p { margin: 5px 0; }
 .md-view code { background: var(--surface-2); border: 1px solid var(--border); padding: 0 4px; border-radius: var(--r-sm); font-family: var(--font-mono); font-size: 11px; }
 .md-view pre { background: var(--surface-2); border: 1px solid var(--border); padding: 10px 14px; border-radius: var(--r-md); overflow-x: auto; margin: 6px 0; }
+.md-view .md-plain-text {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-family: var(--font-body);
+  font-size: 12px;
+  line-height: 1.75;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
 
 /* ════════════════════════════════════
    FLOATING ACTION BUTTONS

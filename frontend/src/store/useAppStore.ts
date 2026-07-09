@@ -5,7 +5,10 @@ export interface FileItem {
   filename: string
   uploadTime: string
   textContent: string
+  importMode: ImportMode
 }
+
+export type ImportMode = 'mindmap' | 'raw'
 
 export interface ChatMessage {
   id: string
@@ -96,7 +99,7 @@ const loadConfig = (): AIConfig => {
 }
 
 interface PersistedState {
-  files: Array<{ id: string; filename: string; uploadTime: string }>
+  files: Array<{ id: string; filename: string; uploadTime: string; importMode?: ImportMode }>
   mindmapMarkdown: Record<string, string>
   activeFileId: string | null
   chatHistory: Record<string, ChatMessage[]>
@@ -115,7 +118,7 @@ const loadPersistedState = (): PersistedState => {
 }
 
 const buildSavePayload = (state: AppState): PersistedState => ({
-  files: state.files.map(({ id, filename, uploadTime }) => ({ id, filename, uploadTime })),
+  files: state.files.map(({ id, filename, uploadTime, importMode }) => ({ id, filename, uploadTime, importMode })),
   mindmapMarkdown: state.mindmapMarkdown,
   activeFileId: state.activeFileId,
   chatHistory: state.chatHistory,
@@ -155,7 +158,7 @@ const toSetMap = (raw: Record<string, string[]>): Record<string, Set<string>> =>
   Object.fromEntries(Object.entries(raw ?? {}).map(([k, v]) => [k, new Set(v)]))
 
 export const useAppStore = create<AppState>((set) => ({
-  files: persisted.files.map((f) => ({ ...f, textContent: '' })),
+  files: persisted.files.map((f) => ({ ...f, textContent: '', importMode: f.importMode ?? 'mindmap' })),
   activeFileId: persisted.activeFileId,
   mindmapMarkdown: persisted.mindmapMarkdown,
   aiConfig: loadConfig(),
@@ -189,7 +192,16 @@ export const useAppStore = create<AppState>((set) => ({
     }),
 
   setActiveFile: (id) =>
-    set({ activeFileId: id, selectedContent: null, selectionSource: null, selectionPos: null }),
+    set((s) => {
+      const file = s.files.find((f) => f.id === id)
+      return {
+        activeFileId: id,
+        selectedContent: null,
+        selectionSource: null,
+        selectionPos: null,
+        leftViewMode: file?.importMode === 'raw' ? 'markdown' : s.leftViewMode,
+      }
+    }),
 
   setAIConfig: (config) =>
     set((s) => {

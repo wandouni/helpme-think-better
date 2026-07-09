@@ -86,7 +86,10 @@ export default function FileListDropdown() {
                     onClick={() => { setActiveFile(f.id); setOpen(false) }}
                   >
                     <span className="di-name" title={f.filename}>{f.filename}</span>
-                    <span className="di-time"><Clock size={10} />{f.uploadTime}</span>
+                    <span className="di-time">
+                      <Clock size={10} />{f.uploadTime}
+                      <span className="di-mode">{f.importMode === 'raw' ? '原文' : '导图'}</span>
+                    </span>
                   </div>
                   {confirmId === f.id ? (
                     <div className="confirm-row">
