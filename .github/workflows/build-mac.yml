@@ -1,0 +1,90 @@
+name: Build macOS Installer
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: macos-13
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install frontend deps
+        working-directory: frontend
+        run: npm install
+
+      - name: Build frontend
+        working-directory: frontend
+        run: npm run build
+
+      - name: Copy frontend to backend/static
+        run: |
+          rm -rf backend/static
+          cp -R frontend/dist backend/static
+
+      - name: Install Python deps + PyInstaller
+        working-directory: backend
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pyinstaller
+
+      - name: Run PyInstaller
+        working-directory: backend
+        run: pyinstaller server.spec --clean --noconfirm
+
+      - name: Install desktop deps
+        working-directory: desktop
+        env:
+          ELECTRON_MIRROR: https://npmmirror.com/mirrors/electron/
+        run: npm install
+
+      - name: Build macOS app
+        working-directory: desktop
+        env:
+          ELECTRON_MIRROR: https://npmmirror.com/mirrors/electron/
+        run: npm run make -- --platform darwin
+
+      - name: Build DMG
+        run: |
+          mkdir -p desktop/out/make
+          hdiutil create -volname "Lumio" \
+            -srcfolder desktop/out/Lumio-darwin-x64/Lumio.app \
+            -ov -format UDZO -o desktop/out/make/Lumio.dmg
+
+      - name: Upload installer artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Lumio-macOS
+          path: desktop/out/make/Lumio.dmg
+          retention-days: 30
+
+      - name: Upload to Release
+        if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ "${GITHUB_REF_TYPE:-}" = "tag" ]; then
+            release_tag="$GITHUB_REF_NAME"
+          else
+            release_tag="v1.0.0"
+          fi
+          gh release upload "$release_tag" desktop/out/make/Lumio.dmg --clobber
