@@ -50,7 +50,7 @@ export default function TopToolbar() {
 
       if (importMode === 'raw') {
         setMindmapMarkdown(result.file_id, result.text_content)
-        setLeftViewMode('markdown')
+        setLeftViewMode('mindmap')
         toast.success('原文提取完成', { id: toastId })
         return
       }

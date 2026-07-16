@@ -192,16 +192,7 @@ export const useAppStore = create<AppState>((set) => ({
     }),
 
   setActiveFile: (id) =>
-    set((s) => {
-      const file = s.files.find((f) => f.id === id)
-      return {
-        activeFileId: id,
-        selectedContent: null,
-        selectionSource: null,
-        selectionPos: null,
-        leftViewMode: file?.importMode === 'raw' ? 'markdown' : s.leftViewMode,
-      }
-    }),
+    set({ activeFileId: id, selectedContent: null, selectionSource: null, selectionPos: null }),
 
   setAIConfig: (config) =>
     set((s) => {
